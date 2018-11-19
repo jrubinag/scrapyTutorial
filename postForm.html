@@ -1,0 +1,2393 @@
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>.:: SUNAT - Consulta de Mercancia Restringida ::.</title>
+<link href="/a/css/estilos2_0.css" rel="stylesheet">
+
+
+
+<script language="JavaScript1.2" src="/a/js/js.js"></script>
+<script language="JavaScript1.2" src="/a/js/operadorUtil.js"></script>
+<script language="JavaScript1.2" src="/a/js/ts_picker.js" type="text/javascript"></script>
+<script language="JavaScript1.2" src="/a/js/paginacion.js"></script>
+<script language="JavaScript1.2">
+
+function jsInicio(){
+	var formx = document.form1;
+	
+	if(formx.tipo_doc != undefined)
+		formx.tipo_doc.value = '';
+	formx.criterio.value = '5681';
+	formx.grupo.value = '4';
+	formx.orden.value = 'fob';	
+	
+	
+}
+
+
+function jsBuscar(){
+	var formx = window.document.form1;
+
+	if(formx.fec_inicio.value == ''){
+		alert('Ingrese la fecha de inicio de numeración');
+		formx.fec_inicio.focus();
+		return;
+	}else if(!checkdateOperador(formx.fec_inicio.value)){
+		alert('Formato de fecha incorrecto');
+		formx.fec_inicio.focus();
+		return false;			
+	}
+	
+	if(formx.fec_fin.value == ''){
+		alert('Ingrese la fecha de fin de numeración');
+		formx.fec_fin.focus();
+		return;
+	}else if(!checkdateOperador(formx.fec_fin.value)){
+		alert('Formato de fecha incorrecto');
+		formx.fec_fin.focus();
+		return false;			
+	}
+	
+	if(comparafecha(formx.fec_inicio.value, formx.fec_fin.value) == 1){
+		formx.fec_inicio.focus();
+		alert('La fecha de inicio de numeración no puede ser mayor a la de fecha fin de numeración');
+		return;
+	}		
+	if(formx.fec_inicio.value.substring(6,10) != formx.fec_fin.value.substring(6,10) ){
+		formx.fec_fin.focus();
+		alert('Solo se puede consultar para un mismo año');
+		return;
+	}
+	
+		if(formx.criterio.value == ''){
+		alert('Seleccione el tipo de documento');
+		formx.criterio.focus();
+	return;
+	}
+	
+	
+
+	if(formx.grupo.value == ''){
+		alert('Ingrese la clasificación');
+		formx.grupo.focus();
+		return;
+	}
+
+	if(formx.orden.value == ''){
+		alert('Seleccione el orden de la consulta');
+		formx.orden.focus();
+		return;
+	}
+	
+	if(!formx.donacion[0].checked && !formx.donacion[1].checked){
+		alert('Seleccione el criterio de donación');
+		formx.donacion[0].focus();
+		return;
+	}
+	formx.accion.value = 'consultarImportador';
+	formx.submit();
+}
+function jsLimpiar(){
+	var formx = document.form1;
+	formx.accion.value = 'cargarConsulta';
+	formx.submit();
+}
+
+//HAcostaR Inicio - M_SNADE193-2 LEY DE PROTECCION DE DATOS PERSONALES
+//function jsDetalle(detalle,description){
+function jsDetalle(detalle,description, tipoDoc){
+	//HAcostaR Fin - M_SNADE193-2 LEY DE PROTECCION DE DATOS PERSONALES	
+	var formx = document.form1;
+	formx.detalle.value=detalle;
+	formx.description.value=description;
+	formx.tipoDocum.value=tipoDoc;//HAcostaR - M_SNADE193-2 LEY DE PROTECCION DE DATOS PERSONALES
+	formx.accion.value = 'consultarDetalleDuaImportador';
+	formx.submit();
+}
+
+
+function jsExport(){
+	var formx = document.form1;
+	formx.target = '_parent';
+	formx.accion.value = 'exportarImportador';
+	formx.submit();
+	formx.target = 'det';
+}
+
+</script>
+</head>
+<body onload="javascript:jsInicio();">
+
+<form name="form1" method="post" action="/cl-ad-consdepa/ConsImpoIAServlet">
+<input type="hidden" name="accion" value="">
+<input type="hidden" name="detalle" value="">
+<input type="hidden" name="description" value="">
+<!--HAcostaR Inicio - M_SNADE193-2 LEY DE PROTECCION DE DATOS PERSONALES -->
+<input type="hidden" name="vig001278" value="F">
+<input type="hidden" name="tipoDocum" value="">
+<!--HAcostaR Fin - M_SNADE193-2 LEY DE PROTECCION DE DATOS PERSONALES -->
+
+<input type="hidden" name="tipoConsulta" value="2">
+<table cellpadding="3" cellspacing="2" border="0" width="100%" class="form-table">
+ 	<tr>
+  		<td>
+   			<table cellpadding="3" cellspacing="3" class="form-table" width="100%">
+   				<tr>
+   					<td>
+   						<table cellpadding="2" cellspacing="2" width="100%">
+   							<tr height="0">
+   								<td width="20%"></td>
+   								<td width="30%"></td>
+   								<td width="20%"></td>
+   								<td width="30%"></td>
+   							</tr>
+		    				<tr>
+		     					<td class="beta" colspan="4"><b>IMPORTACI&Oacute;N DEFINITIVA POR: AGENTE DE ADUANA</b></td>
+		    				</tr>
+		    				<tr>
+						     	<td ><b>Fecha Numeraci&oacute;n:</b></td>
+						     	<td colspan="3">
+						     	
+									<input name="fec_inicio" type="text" class="form-text" value="06/11/2018" size="10" maxlength="10" onkeypress="return jsSoloFechas();">&nbsp;
+									<a id="linkFormFecha" href="javascript:if(!document.form1.fec_inicio.disabled)show_calendar('document.form1.fec_inicio', document.form1.fec_inicio.value);" /> 
+										<img src="/a/imagenes/cal.gif" width="16" height="16" border="0" alt="Fecha (dd/mm/aaaa)">
+									</a>(dd/mm/yyyy)
+								 	&nbsp;
+						        	<input name="fec_fin" type="text" class="form-text" value="16/11/2018" size="10" maxlength="10" onkeypress="return jsSoloFechas();">&nbsp;
+									<a id="linkFormFecha1" href="javascript:if(!document.form1.fec_fin.disabled)show_calendar('document.form1.fec_fin', document.form1.fec_fin.value);" /> 
+										<img src="/a/imagenes/cal.gif" width="16" height="16" border="0" alt="Fecha (dd/mm/aaaa)">
+									</a>(dd/mm/yyyy)
+		     					</td>
+		   					</tr>
+		    				<tr>
+						     	<td><b>Agente de Aduana</b></td>
+						     	<td colspan="3">
+						     		
+			     						<select name="criterio" size="1" class="bg">
+			     							<option value="">-- Seleccionar --</option>
+			     							
+					     						
+						     						<option value="00">00&nbsp;-&nbsp;JOSMAR AGENTES DE ADUANA S.A.                           </option>
+					     						
+						     						<option value="0014">0014&nbsp;-&nbsp;DHL EXPRESS ADUANAS PERU S.A.C.                         </option>
+					     						
+						     						<option value="0019">0019&nbsp;-&nbsp;COSTAMAR S.A.                                           </option>
+					     						
+						     						<option value="0028">0028&nbsp;-&nbsp;ABAD HERMANOS S.A.                                      </option>
+					     						
+						     						<option value="0032">0032&nbsp;-&nbsp;DHL GLOBAL FORWARDING ADUANAS PERU S.A                  </option>
+					     						
+						     						<option value="0046">0046&nbsp;-&nbsp;G.FERNANDEZ Y CIA. S.A.                                 </option>
+					     						
+						     						<option value="0050">0050&nbsp;-&nbsp;ENLACE ADUANERO S.A.C.</option>
+					     						
+						     						<option value="0055">0055&nbsp;-&nbsp;REAL COMPANIA DE SERVICIOS AD. S.A.                     </option>
+					     						
+						     						<option value="0064">0064&nbsp;-&nbsp;MARITIMA MERCANTIL S.A.</option>
+					     						
+						     						<option value="0069">0069&nbsp;-&nbsp;TRANSEL AGENCIA DE ADUANA S.A.                          </option>
+					     						
+						     						<option value="0073">0073&nbsp;-&nbsp;AGENCIA MUELLE S.A.                                     </option>
+					     						
+						     						<option value="0078">0078&nbsp;-&nbsp;YAURICOCHA S.A. AGENCIA DE ADUANA                       </option>
+					     						
+						     						<option value="0082">0082&nbsp;-&nbsp;AGENCIA PORTUARIA S.A.                                  </option>
+					     						
+						     						<option value="0087">0087&nbsp;-&nbsp;AGENTES DE ADUANA NAUTICA S.A.                          </option>
+					     						
+						     						<option value="0091">0091&nbsp;-&nbsp;AGENCIAS RANSA S A                                      </option>
+					     						
+						     						<option value="0096">0096&nbsp;-&nbsp;J.J & D, AGENTES DE ADUANA S.A.                         </option>
+					     						
+						     						<option value="0109">0109&nbsp;-&nbsp;PEDRO R.PEREZ SILVA S.A.</option>
+					     						
+						     						<option value="0118">0118&nbsp;-&nbsp;LAURA TAVOLARA S.A.</option>
+					     						
+						     						<option value="0122">0122&nbsp;-&nbsp;SAGITARIO AGENCIA AFIANZADA DE ADUANA S.A.              </option>
+					     						
+						     						<option value="0127">0127&nbsp;-&nbsp;A.E. SMITH S.A.C. AGENTES DE ADUANA                     </option>
+					     						
+						     						<option value="0131">0131&nbsp;-&nbsp;GERONA AGENTE DE ADUANAS S.A.                           </option>
+					     						
+						     						<option value="0136">0136&nbsp;-&nbsp;ALBERTO LIZARRAGA S.A.</option>
+					     						
+						     						<option value="0140">0140&nbsp;-&nbsp;DESPACHOS INTERNACIONALES DE ADUANA S.A.C.  AG. AF. DE A</option>
+					     						
+						     						<option value="0145">0145&nbsp;-&nbsp;ALEJANDRO ESTRADA E HIJOS S A                           </option>
+					     						
+						     						<option value="0154">0154&nbsp;-&nbsp;INTERNACIONAL S.A.</option>
+					     						
+						     						<option value="0159">0159&nbsp;-&nbsp;MILLENNIUM AGENTES DE ADUANA S.A.C.                     </option>
+					     						
+						     						<option value="0163">0163&nbsp;-&nbsp;LUIS ROJAS GALLO S.C.R.L.</option>
+					     						
+						     						<option value="0168">0168&nbsp;-&nbsp;DISALTEX S.A.                                           </option>
+					     						
+						     						<option value="0172">0172&nbsp;-&nbsp;CORPORACION ADUANERA S.A.</option>
+					     						
+						     						<option value="0177">0177&nbsp;-&nbsp;CORPORACION INTERANDINA S.A. DESPACHADORES ADUANEROS    </option>
+					     						
+						     						<option value="0190">0190&nbsp;-&nbsp;GARCIA PERSICO S. A. C.                                 </option>
+					     						
+						     						<option value="0203">0203&nbsp;-&nbsp;ZOLL SERVICE S.A.                                       </option>
+					     						
+						     						<option value="0208">0208&nbsp;-&nbsp;QUEIROLO A. S.A. AG. DE AD.                             </option>
+					     						
+						     						<option value="0217">0217&nbsp;-&nbsp;UNION COMERCIAL ADUANERA S.A.</option>
+					     						
+						     						<option value="0221">0221&nbsp;-&nbsp;PALACIOS & ASOCIADOS AGENTES DE ADUANA S.A              </option>
+					     						
+						     						<option value="0235">0235&nbsp;-&nbsp;AUGUSTO BEDOYA S.A.                                     </option>
+					     						
+						     						<option value="0244">0244&nbsp;-&nbsp;EXPRESO SERVICIO ADUANERO S.A.</option>
+					     						
+						     						<option value="0249">0249&nbsp;-&nbsp;ADUAPERSA AGENTES DE ADUANA S.A.C.                      </option>
+					     						
+						     						<option value="0253">0253&nbsp;-&nbsp;AGENTES ADUANEROS ASOCIADOS S.A.</option>
+					     						
+						     						<option value="0258">0258&nbsp;-&nbsp;DANIEL ALVARADO AGENTE DE ADUANA S.A.                   </option>
+					     						
+						     						<option value="0262">0262&nbsp;-&nbsp;GAVIYO S.A.</option>
+					     						
+						     						<option value="0267">0267&nbsp;-&nbsp;MENDIETA & LEYVA S.A.                                   </option>
+					     						
+						     						<option value="0271">0271&nbsp;-&nbsp;CONTINENTAL`S ADUANERA S.A.</option>
+					     						
+						     						<option value="0276">0276&nbsp;-&nbsp;DAVILA ROBLES AGENTES AFIANZADOS DE ADUANAS S.A.        </option>
+					     						
+						     						<option value="0280">0280&nbsp;-&nbsp;CARLOS BELLO S.A.C.</option>
+					     						
+						     						<option value="0285">0285&nbsp;-&nbsp;ADUANERA DE COMERCIO S.A.C.                             </option>
+					     						
+						     						<option value="0294">0294&nbsp;-&nbsp;SCHARFF AGENTES AFIANZADOS DE ADUANA S.A.               </option>
+					     						
+						     						<option value="0299">0299&nbsp;-&nbsp;AEREOMAR  S.A.</option>
+					     						
+						     						<option value="0302">0302&nbsp;-&nbsp;CORPORACION PACIFIC.  S.A.C                             </option>
+					     						
+						     						<option value="0307">0307&nbsp;-&nbsp;CARLOS NUNEZ JENKINS S A AGEN DE ADUANA</option>
+					     						
+						     						<option value="0311">0311&nbsp;-&nbsp;AGENCIA DE ADUANA RRR DEL PACIFICO SAC</option>
+					     						
+						     						<option value="0316">0316&nbsp;-&nbsp;CARLOS TORRES DELGADO S.A.</option>
+					     						
+						     						<option value="0325">0325&nbsp;-&nbsp;CESAR GUZMAN GARCIA S.R.LTDA.                           </option>
+					     						
+						     						<option value="0334">0334&nbsp;-&nbsp;PEDRO DONGO SORIA S.A. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="0339">0339&nbsp;-&nbsp;PACIFIC CUSTOM SYSTEMS S.A.C                            </option>
+					     						
+						     						<option value="0343">0343&nbsp;-&nbsp;CADUR ADUANERA S.A.</option>
+					     						
+						     						<option value="0348">0348&nbsp;-&nbsp;JOSMAR AGENTES DE ADUANA S.A.</option>
+					     						
+						     						<option value="0357">0357&nbsp;-&nbsp;ASUNTOS ADUANEROS TRAMEXIM S.A. AGENTE AFIANZADO DE ADUA</option>
+					     						
+						     						<option value="0361">0361&nbsp;-&nbsp;RAPIADUANAS S.A.</option>
+					     						
+						     						<option value="0366">0366&nbsp;-&nbsp;SALAZAR MARSANO S.A.                                    </option>
+					     						
+						     						<option value="0370">0370&nbsp;-&nbsp;CIA. MERCANTIL ADUANERA S.A.</option>
+					     						
+						     						<option value="0398">0398&nbsp;-&nbsp;DESPACHOS ADUANEROS S.A.</option>
+					     						
+						     						<option value="0401">0401&nbsp;-&nbsp;ADUANERA PORTUARIA S.A                                  </option>
+					     						
+						     						<option value="0406">0406&nbsp;-&nbsp;FERNANDO DAGNINO CORDOVA S.A.</option>
+					     						
+						     						<option value="0410">0410&nbsp;-&nbsp;DEPOVENT AGENTES DE ADUANA S.A.C                        </option>
+					     						
+						     						<option value="0415">0415&nbsp;-&nbsp;UNION ADUANERA S.A.</option>
+					     						
+						     						<option value="0424">0424&nbsp;-&nbsp;ARANIBAR ORTIZ PEDRO AURELIO</option>
+					     						
+						     						<option value="0433">0433&nbsp;-&nbsp;EDUARDO MARISCA  AG. DE AD. S.A.</option>
+					     						
+						     						<option value="0438">0438&nbsp;-&nbsp;SAITO S.A. AGENCIA DE ADUANA                            </option>
+					     						
+						     						<option value="0442">0442&nbsp;-&nbsp;MANDATARIOS ADUANEROS SA</option>
+					     						
+						     						<option value="0451">0451&nbsp;-&nbsp;OPERACIONES MARITIMAS Y ADUANERAS S.A.                  </option>
+					     						
+						     						<option value="0460">0460&nbsp;-&nbsp;ENRIQUE ABAD Y CIA. S.A</option>
+					     						
+						     						<option value="0479">0479&nbsp;-&nbsp;JOSE SEPULVEDA Z. S.A.</option>
+					     						
+						     						<option value="0483">0483&nbsp;-&nbsp;MARINO HNOS S.A. AGENTE DE ADUANAS</option>
+					     						
+						     						<option value="0488">0488&nbsp;-&nbsp;GENERAL CUSTOMS S.A.                                    </option>
+					     						
+						     						<option value="0497">0497&nbsp;-&nbsp;JUAN E. MADICO M. AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="0505">0505&nbsp;-&nbsp;PALACIOS S. A.                                          </option>
+					     						
+						     						<option value="0514">0514&nbsp;-&nbsp;AGENCIA DE LIMA S.A. ADELSA</option>
+					     						
+						     						<option value="0523">0523&nbsp;-&nbsp;PAEZ S.A.</option>
+					     						
+						     						<option value="0528">0528&nbsp;-&nbsp;AGENTES TECNIFICADOS ADUANEROS S.A.C                    </option>
+					     						
+						     						<option value="0532">0532&nbsp;-&nbsp;NICANOR ARTEAGA S.C.R.L.</option>
+					     						
+						     						<option value="0537">0537&nbsp;-&nbsp;MR & L AGENTES AFIANZADOS DE ADUANAS S.A.               </option>
+					     						
+						     						<option value="0541">0541&nbsp;-&nbsp;AGENCIA ADUANERA DOS DE MAYO S.A.</option>
+					     						
+						     						<option value="0546">0546&nbsp;-&nbsp;CLI ADUANAS S.A.                                        </option>
+					     						
+						     						<option value="0550">0550&nbsp;-&nbsp;SUD-AMERICANA AGENTES DE AD. S.A.</option>
+					     						
+						     						<option value="0555">0555&nbsp;-&nbsp;ARTEAGA AGENTES DE ADUANA SOCIEDAD ANONIMA CERRADA      </option>
+					     						
+						     						<option value="0564">0564&nbsp;-&nbsp;LOGISTIC PARTNERS S.A.C.                                </option>
+					     						
+						     						<option value="0569">0569&nbsp;-&nbsp;DESPACHADORA PORTENA S.A.                               </option>
+					     						
+						     						<option value="0573">0573&nbsp;-&nbsp;ZAVALA HERMANOS AGENTES DE ADUANA S.A.                  </option>
+					     						
+						     						<option value="0587">0587&nbsp;-&nbsp;GUILLERMO PORTAL E HIJOS S.A.</option>
+					     						
+						     						<option value="0604">0604&nbsp;-&nbsp;DESPACHOS INTERCONTINENTALES S.A.                       </option>
+					     						
+						     						<option value="0622">0622&nbsp;-&nbsp;TAIWAN TRADE ADUANA S.A.</option>
+					     						
+						     						<option value="0631">0631&nbsp;-&nbsp;LUIS F BATTIFORA AGENTE DE ADUANA S                     </option>
+					     						
+						     						<option value="0640">0640&nbsp;-&nbsp;SANTA BEATRIZ S.A.</option>
+					     						
+						     						<option value="0659">0659&nbsp;-&nbsp;INTERAMERICAN SERVICE CO. S.A.C.                        </option>
+					     						
+						     						<option value="0668">0668&nbsp;-&nbsp;MOVIMIENTOS ADUANEROS S.A. "MOVIADUANAS S.A."</option>
+					     						
+						     						<option value="0677">0677&nbsp;-&nbsp;JORGE E. ESPINOZA AG.DE AD.</option>
+					     						
+						     						<option value="0686">0686&nbsp;-&nbsp;JAIME CHENEFFUSSE S.A.C. AGENCIA DE ADUANAS             </option>
+					     						
+						     						<option value="0695">0695&nbsp;-&nbsp;SAN CARLOS S.A.</option>
+					     						
+						     						<option value="0712">0712&nbsp;-&nbsp;JORGE OTTINIANO S.A.                                    </option>
+					     						
+						     						<option value="0721">0721&nbsp;-&nbsp;AGENCIA DE ADUANAS ARANJUEZ  S.A                        </option>
+					     						
+						     						<option value="0730">0730&nbsp;-&nbsp;JOSE A. BAGLIETTO S.A.</option>
+					     						
+						     						<option value="0749">0749&nbsp;-&nbsp;JOSE BALBUENA VALDIVIA AD.DE AD. S.A.</option>
+					     						
+						     						<option value="0758">0758&nbsp;-&nbsp;DARIO PHUMPIU MURILLO AG. AF. DE AD</option>
+					     						
+						     						<option value="0767">0767&nbsp;-&nbsp;ACTIVIDADES ADUANERAS S.A.</option>
+					     						
+						     						<option value="0776">0776&nbsp;-&nbsp;LA DILIGENCIA S.A.</option>
+					     						
+						     						<option value="0785">0785&nbsp;-&nbsp;JOSE VICENTE SILVA FERNANDEZ S.R.L. AGENTE DE ADUANA</option>
+					     						
+						     						<option value="0794">0794&nbsp;-&nbsp;JORGE O. PETTERSON S.A. AG. DE AD.                      </option>
+					     						
+						     						<option value="0802">0802&nbsp;-&nbsp;AGENCIA DE ADUANA MUSSO SOCIEDAD ANONIMA</option>
+					     						
+						     						<option value="0811">0811&nbsp;-&nbsp;BALLESILE S.A. AGENTES DE ADUANA                        </option>
+					     						
+						     						<option value="0820">0820&nbsp;-&nbsp;ADUANERA TAURO S.R.LTDA.</option>
+					     						
+						     						<option value="0839">0839&nbsp;-&nbsp;OLIVER S.A.</option>
+					     						
+						     						<option value="0848">0848&nbsp;-&nbsp;GERMAN O. VALCARCEL S.A.</option>
+					     						
+						     						<option value="0857">0857&nbsp;-&nbsp;INTERADUANA S.A.                                        </option>
+					     						
+						     						<option value="0866">0866&nbsp;-&nbsp;ABRAHAM WOLL DAVILA</option>
+					     						
+						     						<option value="0875">0875&nbsp;-&nbsp;LUIS D. URBINA S.A.</option>
+					     						
+						     						<option value="0884">0884&nbsp;-&nbsp;DANESSI AG. AF. DE AD. S.A.</option>
+					     						
+						     						<option value="0893">0893&nbsp;-&nbsp;EDUARDO MUSSO AG.DE AD. S.A.                            </option>
+					     						
+						     						<option value="0901">0901&nbsp;-&nbsp;AGENTES Y ASES.INTGRAL.EN ADUANAS SA</option>
+					     						
+						     						<option value="0910">0910&nbsp;-&nbsp;CARMEN YONG DE CHANG AG.DE AD. S.A.</option>
+					     						
+						     						<option value="0929">0929&nbsp;-&nbsp;TECNOMAR S.A.                                           </option>
+					     						
+						     						<option value="0938">0938&nbsp;-&nbsp;SERVICIOS ADUANEROS NACIONALES S.A.C.</option>
+					     						
+						     						<option value="0947">0947&nbsp;-&nbsp;GUILLERMO WIESE S.A.                                    </option>
+					     						
+						     						<option value="0956">0956&nbsp;-&nbsp;AGENCIA DE ADUANA JESUS GUTIERREZ TORREB LANCA S.R.L.</option>
+					     						
+						     						<option value="0965">0965&nbsp;-&nbsp;ALFONSO ABELARDO URBINA SOPLIN</option>
+					     						
+						     						<option value="0974">0974&nbsp;-&nbsp;TECNICA AD. INTERNACIONAL S.C.R.LTDA</option>
+					     						
+						     						<option value="0983">0983&nbsp;-&nbsp;AGENCIA DE ADUANA VICMAR S.A.                           </option>
+					     						
+						     						<option value="0992">0992&nbsp;-&nbsp;MIASA INTEGRACION ADUANERA SAC</option>
+					     						
+						     						<option value="1009">1009&nbsp;-&nbsp;AUSA ADUANAS S.A.                                       </option>
+					     						
+						     						<option value="1018">1018&nbsp;-&nbsp;JORGE RIVVA LOPEZ S A                                   </option>
+					     						
+						     						<option value="1027">1027&nbsp;-&nbsp;MONTEVERDE ADUANERA COMERCIAL S.A.C.                    </option>
+					     						
+						     						<option value="1036">1036&nbsp;-&nbsp;M.A. LA HOZ S.A. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="1045">1045&nbsp;-&nbsp;NEGOCIOS ADUANEROS S.A.</option>
+					     						
+						     						<option value="1054">1054&nbsp;-&nbsp;M.R. FERNANDEZ S.A. AG. AFIANZADOS DE AD.</option>
+					     						
+						     						<option value="1063">1063&nbsp;-&nbsp;AGENCIA DE ADUANA TRANSCONTINENTAL S.A.                 </option>
+					     						
+						     						<option value="1072">1072&nbsp;-&nbsp;OMEGA S.A.C AGENTE DE ADUANA</option>
+					     						
+						     						<option value="1081">1081&nbsp;-&nbsp;HUGO ELESPURU S.A.</option>
+					     						
+						     						<option value="1090">1090&nbsp;-&nbsp;DESPACHOS INTERNACIONALES PACIFICO S.A. AG. DE AD.      </option>
+					     						
+						     						<option value="1108">1108&nbsp;-&nbsp;COSMOS CALLAO S.A. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="1117">1117&nbsp;-&nbsp;AGENCIA ADUANERA DEL CALLAO S.A.</option>
+					     						
+						     						<option value="1126">1126&nbsp;-&nbsp;DESPACHOS INDUSTRIALES S.A.</option>
+					     						
+						     						<option value="1135">1135&nbsp;-&nbsp;SERVICIOS EN ADUANAS S.C.R.L.</option>
+					     						
+						     						<option value="1144">1144&nbsp;-&nbsp;LUIS GUILLEN S.A.</option>
+					     						
+						     						<option value="1153">1153&nbsp;-&nbsp;NAVARRO HERMANOS S.A.                                   </option>
+					     						
+						     						<option value="1162">1162&nbsp;-&nbsp;SANTIAGO DIEZ CANSECO CISNEROS</option>
+					     						
+						     						<option value="1171">1171&nbsp;-&nbsp;MAZURE S.A.</option>
+					     						
+						     						<option value="1180">1180&nbsp;-&nbsp;PASSALACQUA S.A.</option>
+					     						
+						     						<option value="1199">1199&nbsp;-&nbsp;PEDRO ROJAS BRIONES</option>
+					     						
+						     						<option value="1207">1207&nbsp;-&nbsp;AGENCIAS UNIDAS S.A.C.                                  </option>
+					     						
+						     						<option value="1216">1216&nbsp;-&nbsp;P. SUEYRAS AG. DE AD. S.A.                              </option>
+					     						
+						     						<option value="1225">1225&nbsp;-&nbsp;UNIVERSAL ADUANERA S.A.C.                               </option>
+					     						
+						     						<option value="1234">1234&nbsp;-&nbsp;IBARRA Y MAU S.A.                                       </option>
+					     						
+						     						<option value="1243">1243&nbsp;-&nbsp;ROBERTO CONTRERAS ROJAS S.A</option>
+					     						
+						     						<option value="1252">1252&nbsp;-&nbsp;RODOLFO PARRA SOTO AG. AF. DE AD.                       </option>
+					     						
+						     						<option value="1261">1261&nbsp;-&nbsp;SERVICIOS ADUANEROS S.A.</option>
+					     						
+						     						<option value="1270">1270&nbsp;-&nbsp;C&C DESPACHOS S.A.C. AGENTE DE ADUANA                   </option>
+					     						
+						     						<option value="1289">1289&nbsp;-&nbsp;S.A. COM. E IND. FAUSTO G.PIAGGIO                       </option>
+					     						
+						     						<option value="1298">1298&nbsp;-&nbsp;RAMOS ZAPATA SEMINARIO S.A. AG. AF. DE AD.              </option>
+					     						
+						     						<option value="1306">1306&nbsp;-&nbsp;SUCESORES DE GENARO C. MORENO S.A.</option>
+					     						
+						     						<option value="1315">1315&nbsp;-&nbsp;LUIS JAIME GUILLEN VILLAVICENCIO</option>
+					     						
+						     						<option value="1324">1324&nbsp;-&nbsp;ULISES VIZCARDO AG.DE AD. AF. S.R.L.                    </option>
+					     						
+						     						<option value="1333">1333&nbsp;-&nbsp;AG. DE AD. VICTOR D. SILVA CORREA S.C.R.L.</option>
+					     						
+						     						<option value="1342">1342&nbsp;-&nbsp;JACINTO NICOLAS MELENDEZ SOTO</option>
+					     						
+						     						<option value="1351">1351&nbsp;-&nbsp;JOSE V. MOLFINO S.A. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="1360">1360&nbsp;-&nbsp;PERUTRANS S.A.C.                                        </option>
+					     						
+						     						<option value="1379">1379&nbsp;-&nbsp;DESPACHOS DE ADUANA SANTA ELISA S.A</option>
+					     						
+						     						<option value="1388">1388&nbsp;-&nbsp;DAHAL S.A.C                                             </option>
+					     						
+						     						<option value="1397">1397&nbsp;-&nbsp;TRAMITES DE COMERCIO EXTERIOR E.I.R.L. AG. DE AD.</option>
+					     						
+						     						<option value="1405">1405&nbsp;-&nbsp;AERO MARITIMA POSTAL S.A. (AMPSA)</option>
+					     						
+						     						<option value="1414">1414&nbsp;-&nbsp;RENE CESPEDES S.A. AG. AFIANZADOS DE AD.</option>
+					     						
+						     						<option value="1423">1423&nbsp;-&nbsp;HECTOR N. RAMOS VERGARA S.A.</option>
+					     						
+						     						<option value="1432">1432&nbsp;-&nbsp;INTERCONTINENTAL S.A.</option>
+					     						
+						     						<option value="1441">1441&nbsp;-&nbsp;HUGO PAINO N. & CIA. S.A.</option>
+					     						
+						     						<option value="1450">1450&nbsp;-&nbsp;LUIS MIGUEL MENDIZABAL RAMIREZ</option>
+					     						
+						     						<option value="1469">1469&nbsp;-&nbsp;LUIS BETETA S.A. AGENTES DE ADUANA                      </option>
+					     						
+						     						<option value="1478">1478&nbsp;-&nbsp;MOISES NORIEGA CERNA S.A.</option>
+					     						
+						     						<option value="1487">1487&nbsp;-&nbsp;LAVALLE SUITO DESPACHADORES ADUANEROS SA</option>
+					     						
+						     						<option value="1496">1496&nbsp;-&nbsp;FELIX ROJAS ELESCANO S.A.                               </option>
+					     						
+						     						<option value="1504">1504&nbsp;-&nbsp;ANDINA S.A.</option>
+					     						
+						     						<option value="1513">1513&nbsp;-&nbsp;ALFONSO SEBASTIANI S.A.C. AGENCIA DE ADUANA             </option>
+					     						
+						     						<option value="1522">1522&nbsp;-&nbsp;LASMAN S.A.</option>
+					     						
+						     						<option value="1531">1531&nbsp;-&nbsp;DESPACHADORA CALLAO S.A.</option>
+					     						
+						     						<option value="1540">1540&nbsp;-&nbsp;INVERSIONES ADUANERAS S.A.                              </option>
+					     						
+						     						<option value="1559">1559&nbsp;-&nbsp;PERU CUSTOM SERVICES AG. AFIANZADOS DE AD. S.A.         </option>
+					     						
+						     						<option value="1568">1568&nbsp;-&nbsp;CESAR GIBU TOKUMURA</option>
+					     						
+						     						<option value="1577">1577&nbsp;-&nbsp;EGILIO MULLER AG. DE AD. S.A.</option>
+					     						
+						     						<option value="1586">1586&nbsp;-&nbsp;ANDINA TRADING CORPORATION S.A.</option>
+					     						
+						     						<option value="1595">1595&nbsp;-&nbsp;ADUANERA PISCIS S.A.</option>
+					     						
+						     						<option value="1603">1603&nbsp;-&nbsp;LM S.A. SERVICIOS LOGISTICOS</option>
+					     						
+						     						<option value="1612">1612&nbsp;-&nbsp;HECTOR GONZALES SANDI AGENCIA AFIANZADA DE ADUANA. S.A. </option>
+					     						
+						     						<option value="1621">1621&nbsp;-&nbsp;SABOGAL SOCIEDAD ANONIMA AG. AF. DE ADUANA              </option>
+					     						
+						     						<option value="1649">1649&nbsp;-&nbsp;FIDEL A. LLAURY REVOLLEDO S.A.</option>
+					     						
+						     						<option value="1658">1658&nbsp;-&nbsp;MARIO SAONA CORTAVITARTE S.A.</option>
+					     						
+						     						<option value="1667">1667&nbsp;-&nbsp;DUANY & GUZMAN S.C.R.LTDA.                              </option>
+					     						
+						     						<option value="1676">1676&nbsp;-&nbsp;HUGO GADEA VILLAR S.A. AG ADUANAS</option>
+					     						
+						     						<option value="1685">1685&nbsp;-&nbsp;DESPACHOS Y SERVICIOS S.A.</option>
+					     						
+						     						<option value="1694">1694&nbsp;-&nbsp;TECNIADUANA S.A.C.                                      </option>
+					     						
+						     						<option value="1702">1702&nbsp;-&nbsp;DENEUMOSTIER & LAMA S.A.</option>
+					     						
+						     						<option value="1711">1711&nbsp;-&nbsp;GRUPO ADUANERO S.A.C.</option>
+					     						
+						     						<option value="1720">1720&nbsp;-&nbsp;AGENCIA DE ADUANA SOL S.A.                              </option>
+					     						
+						     						<option value="1739">1739&nbsp;-&nbsp;NOVELLA Y SEGURA S.A.</option>
+					     						
+						     						<option value="1748">1748&nbsp;-&nbsp;TRAMITES Y DESPACHOS S.A.                               </option>
+					     						
+						     						<option value="1757">1757&nbsp;-&nbsp;FERNANDO GUTIERREZ THOMPSON E HIJOS AGENTES DE ADUANAS S</option>
+					     						
+						     						<option value="1766">1766&nbsp;-&nbsp;AMADEO RODRIGUEZ LEON S.C.R.LTDA.</option>
+					     						
+						     						<option value="1775">1775&nbsp;-&nbsp;AGENTES DE ADUANA MAR PERUANO S.A.                      </option>
+					     						
+						     						<option value="1784">1784&nbsp;-&nbsp;CORPORACION LOGISTICA LAS AMERICAS S.A.</option>
+					     						
+						     						<option value="1793">1793&nbsp;-&nbsp;SOTO S.A.                                               </option>
+					     						
+						     						<option value="1801">1801&nbsp;-&nbsp;FREYRE DE CACERES IVONNE</option>
+					     						
+						     						<option value="1810">1810&nbsp;-&nbsp;GAMA ADUANAS S.A.C.                                     </option>
+					     						
+						     						<option value="1829">1829&nbsp;-&nbsp;JULIO CESAR PALMA FERRETTI AG. AF. AD. S.A.</option>
+					     						
+						     						<option value="1838">1838&nbsp;-&nbsp;JESUS DIAZ RIVAS</option>
+					     						
+						     						<option value="1847">1847&nbsp;-&nbsp;ARTURO ISAC CHAVEZ PAJUELO S.A.                         </option>
+					     						
+						     						<option value="1856">1856&nbsp;-&nbsp;R & R S.A. AGENCIA DE ADUANA                            </option>
+					     						
+						     						<option value="1865">1865&nbsp;-&nbsp;SEGUNDO A. LOBATO ARAUJO S.A.</option>
+					     						
+						     						<option value="1874">1874&nbsp;-&nbsp;NEW WORLD ADUANAS S.A.C.</option>
+					     						
+						     						<option value="1883">1883&nbsp;-&nbsp;LUIS SALAZAR MARSANO</option>
+					     						
+						     						<option value="1892">1892&nbsp;-&nbsp;FAZIO ADUANAS SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="1900">1900&nbsp;-&nbsp;AGENCIA DE ADUANA RABANAL S.A.C.</option>
+					     						
+						     						<option value="1919">1919&nbsp;-&nbsp;MARITIMA ADUANERA S.A.</option>
+					     						
+						     						<option value="1928">1928&nbsp;-&nbsp;SERVICIOS PORTUARIOS S.A.</option>
+					     						
+						     						<option value="1937">1937&nbsp;-&nbsp;JAIME RAMIREZ MC CUBBIN S.R.L.                          </option>
+					     						
+						     						<option value="1946">1946&nbsp;-&nbsp;JULIO ABAD S.A. AGENTES DE ADUANA                       </option>
+					     						
+						     						<option value="1955">1955&nbsp;-&nbsp;LUIS ALBERTO SANCHEZ BAUMAN DE METZ</option>
+					     						
+						     						<option value="1964">1964&nbsp;-&nbsp;PEREZ SILVA CARLOS ANDRES</option>
+					     						
+						     						<option value="1973">1973&nbsp;-&nbsp;OPERACIONES Y TRAMITES ADUANEROS S.A.C. - OTASAC        </option>
+					     						
+						     						<option value="1982">1982&nbsp;-&nbsp;MEYLEN S.A.</option>
+					     						
+						     						<option value="1991">1991&nbsp;-&nbsp;DESPACHOS Y TRAMITACIONES S.A.</option>
+					     						
+						     						<option value="2008">2008&nbsp;-&nbsp;REPRESENTACIONES ADUANERAS S.A.</option>
+					     						
+						     						<option value="2017">2017&nbsp;-&nbsp;AGENCIA DE ADUANA MIRAFLORES S A</option>
+					     						
+						     						<option value="2026">2026&nbsp;-&nbsp;EMPRESA COMERCIAL ADUANERA PERUANA S.A.</option>
+					     						
+						     						<option value="2035">2035&nbsp;-&nbsp;GESTIONES ADUANERAS S.A.</option>
+					     						
+						     						<option value="2044">2044&nbsp;-&nbsp;LA COSTA AZUL S.A.</option>
+					     						
+						     						<option value="2053">2053&nbsp;-&nbsp;SANCHEZ SOLARI FELIX</option>
+					     						
+						     						<option value="2062">2062&nbsp;-&nbsp;FLORES & ASOCIADOS S.A. AGENCIA DE ADUANA               </option>
+					     						
+						     						<option value="2071">2071&nbsp;-&nbsp;CONSORCIO ADUANERO SAN REMO S.A.C.</option>
+					     						
+						     						<option value="2080">2080&nbsp;-&nbsp;CONSORCIO ADUANERO S.A.                                 </option>
+					     						
+						     						<option value="2099">2099&nbsp;-&nbsp;VIRGEN DE FATIMA S.A.</option>
+					     						
+						     						<option value="2107">2107&nbsp;-&nbsp;INCA S.A.</option>
+					     						
+						     						<option value="2116">2116&nbsp;-&nbsp;ALBERTO DAVILA ROSSI S.A.                               </option>
+					     						
+						     						<option value="2125">2125&nbsp;-&nbsp;NAVASA AGENTES DE ADUANA S.A.                           </option>
+					     						
+						     						<option value="2143">2143&nbsp;-&nbsp;AGENCIA DE ADUANA TRANSOCEANIC S.A.                     </option>
+					     						
+						     						<option value="2152">2152&nbsp;-&nbsp;DESPACHOS ADUANEROS INTERNACIONALES SAC. AGENCIA DE ADUA</option>
+					     						
+						     						<option value="2161">2161&nbsp;-&nbsp;ARSEMO S.A.</option>
+					     						
+						     						<option value="2170">2170&nbsp;-&nbsp;AGENTES ADUANEROS UNIVERSAL S.A. (AGADUSA)</option>
+					     						
+						     						<option value="2189">2189&nbsp;-&nbsp;ADUANERA LATINOAMERICANA S.A.</option>
+					     						
+						     						<option value="2198">2198&nbsp;-&nbsp;FLASH S.A.</option>
+					     						
+						     						<option value="2206">2206&nbsp;-&nbsp;AGLOPER S.A.C.                                          </option>
+					     						
+						     						<option value="2215">2215&nbsp;-&nbsp;GONZALES ALVAREZ OTTO MAURICIO</option>
+					     						
+						     						<option value="2224">2224&nbsp;-&nbsp;SAVAR AGENTES DE ADUANA S A                             </option>
+					     						
+						     						<option value="2233">2233&nbsp;-&nbsp;HUALLAGA S.A.</option>
+					     						
+						     						<option value="2242">2242&nbsp;-&nbsp;DESPACHOS SANDEX S. A.                                  </option>
+					     						
+						     						<option value="2251">2251&nbsp;-&nbsp;SERVICIOS INTERNACIONALES S.A.                          </option>
+					     						
+						     						<option value="2260">2260&nbsp;-&nbsp;BAHIA S.A.                                              </option>
+					     						
+						     						<option value="2279">2279&nbsp;-&nbsp;ADUANEX S.A.                                            </option>
+					     						
+						     						<option value="2297">2297&nbsp;-&nbsp;COMERCIAL ADUANERA SAN ISIDRO S.A.                      </option>
+					     						
+						     						<option value="2305">2305&nbsp;-&nbsp;LOGISTICA ADUANERA S.A.</option>
+					     						
+						     						<option value="2314">2314&nbsp;-&nbsp;SERVIADUANA S.A.                                        </option>
+					     						
+						     						<option value="2323">2323&nbsp;-&nbsp;MESONES A. S.A.</option>
+					     						
+						     						<option value="2332">2332&nbsp;-&nbsp;IMEX S A AGENTE DE ADUANA</option>
+					     						
+						     						<option value="2341">2341&nbsp;-&nbsp;CENTENARIO S.A.</option>
+					     						
+						     						<option value="2350">2350&nbsp;-&nbsp;JOSE CATERIANO S.C.R.LTDA.                              </option>
+					     						
+						     						<option value="2369">2369&nbsp;-&nbsp;MARTE S.A.</option>
+					     						
+						     						<option value="2378">2378&nbsp;-&nbsp;ADUATEC S.R. L. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="2387">2387&nbsp;-&nbsp;PACIFICO ADUANERA S.A.</option>
+					     						
+						     						<option value="2396">2396&nbsp;-&nbsp;PANAMERICANA S.A.</option>
+					     						
+						     						<option value="2404">2404&nbsp;-&nbsp;DESPACHOS ADUANALES S A                                 </option>
+					     						
+						     						<option value="2422">2422&nbsp;-&nbsp;LYNCH ALBERTO S.A.                                      </option>
+					     						
+						     						<option value="2431">2431&nbsp;-&nbsp;ACHE S.A.</option>
+					     						
+						     						<option value="2459">2459&nbsp;-&nbsp;MARINO RUIZ ALVA S.A.</option>
+					     						
+						     						<option value="2468">2468&nbsp;-&nbsp;ORGANIZACION ADUANERA CLASSIC S.A.</option>
+					     						
+						     						<option value="2477">2477&nbsp;-&nbsp;PRECIADO GOMEZ SIXTO HUMBERTO</option>
+					     						
+						     						<option value="2486">2486&nbsp;-&nbsp;D`ALFONSO DE ZOPPI GIOVANA                              </option>
+					     						
+						     						<option value="2495">2495&nbsp;-&nbsp;VICTOR CASTRO S.A.                                      </option>
+					     						
+						     						<option value="2503">2503&nbsp;-&nbsp;ADUANERA SAN GABRIEL S.A.</option>
+					     						
+						     						<option value="2512">2512&nbsp;-&nbsp;AGENTES PROFESIONALES DE ADUANAS S.A.C.                 </option>
+					     						
+						     						<option value="2521">2521&nbsp;-&nbsp;RIGACCI S.A.</option>
+					     						
+						     						<option value="2530">2530&nbsp;-&nbsp;DANCARTI S.A.</option>
+					     						
+						     						<option value="2549">2549&nbsp;-&nbsp;MUNDO ADUANERO S.A.C.                                   </option>
+					     						
+						     						<option value="2558">2558&nbsp;-&nbsp;ADUANERA MIRAFLORES S.A.</option>
+					     						
+						     						<option value="2576">2576&nbsp;-&nbsp;SEDASA AGENTES DE ADUANA S.A.C.                         </option>
+					     						
+						     						<option value="2585">2585&nbsp;-&nbsp;RODOLFO BUSTAMANTE SA- AGENTES DE ADUANA</option>
+					     						
+						     						<option value="2594">2594&nbsp;-&nbsp;WIESE BAZO JAIME ALBERTO</option>
+					     						
+						     						<option value="2602">2602&nbsp;-&nbsp;EMPRESA PERUANA DE ADUANAS S.A.</option>
+					     						
+						     						<option value="2611">2611&nbsp;-&nbsp;LFE MULTIMODAL ADUANAS S.A.                             </option>
+					     						
+						     						<option value="2620">2620&nbsp;-&nbsp;ADUANERA TRITON S.A.</option>
+					     						
+						     						<option value="2639">2639&nbsp;-&nbsp;CIA.ADUANERA LA CHALACA S.A.                            </option>
+					     						
+						     						<option value="2648">2648&nbsp;-&nbsp;MAC LEAN WILSON EDWARD JULIO                            </option>
+					     						
+						     						<option value="2657">2657&nbsp;-&nbsp;TECHE S.A.</option>
+					     						
+						     						<option value="2666">2666&nbsp;-&nbsp;SIERRA MEZZA ADOLFO</option>
+					     						
+						     						<option value="2675">2675&nbsp;-&nbsp;JULIO GARCES SCARPATI</option>
+					     						
+						     						<option value="2684">2684&nbsp;-&nbsp;ADUANDINA AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="2693">2693&nbsp;-&nbsp;LOGISTICA DE COMERCIO INTERNACIONAL S.A. AG. AF. DE AD.</option>
+					     						
+						     						<option value="2701">2701&nbsp;-&nbsp;ISLAY AGENCIA AFIANZADA DE ADUANA S A                   </option>
+					     						
+						     						<option value="2710">2710&nbsp;-&nbsp;POSTIGO FLORES ALEJANDRO MAURICIO                       </option>
+					     						
+						     						<option value="2729">2729&nbsp;-&nbsp;DESPACHADORA METROPOLITANA S.A.</option>
+					     						
+						     						<option value="2738">2738&nbsp;-&nbsp;ALICIA GUZMAN DE CASTILLO S.A.                          </option>
+					     						
+						     						<option value="2747">2747&nbsp;-&nbsp;INTER-MAR S.A.</option>
+					     						
+						     						<option value="2756">2756&nbsp;-&nbsp;ECOADUANAS S.A.C.</option>
+					     						
+						     						<option value="2765">2765&nbsp;-&nbsp;TRANSAM AG. ADUANERA S.A.</option>
+					     						
+						     						<option value="2774">2774&nbsp;-&nbsp;SCORPION AGENTE DE ADUANA S.A.C.                        </option>
+					     						
+						     						<option value="2783">2783&nbsp;-&nbsp;RIALTO S.A.</option>
+					     						
+						     						<option value="2792">2792&nbsp;-&nbsp;NOVA ADUANERA S.A.                                      </option>
+					     						
+						     						<option value="2800">2800&nbsp;-&nbsp;AGENTRIZ S.A.                                           </option>
+					     						
+						     						<option value="2819">2819&nbsp;-&nbsp;GEMINIS ADUANAS S.A.                                    </option>
+					     						
+						     						<option value="2828">2828&nbsp;-&nbsp;JOSE ALFONSO SILVA LOPEZ S.A.</option>
+					     						
+						     						<option value="2837">2837&nbsp;-&nbsp;LUIS JAICO LANDEO</option>
+					     						
+						     						<option value="2846">2846&nbsp;-&nbsp;MUNDIAL CARGO S.A.C.                                    </option>
+					     						
+						     						<option value="2855">2855&nbsp;-&nbsp;C. & C. S.A.</option>
+					     						
+						     						<option value="2864">2864&nbsp;-&nbsp;SANTA MAGDALENA S.A. AGENCIA DE ADUANA                  </option>
+					     						
+						     						<option value="2873">2873&nbsp;-&nbsp;ARIES S.A.</option>
+					     						
+						     						<option value="2882">2882&nbsp;-&nbsp;CONCORDIA ADUANERA S.A.</option>
+					     						
+						     						<option value="2891">2891&nbsp;-&nbsp;DESPACHOS COMERCIALES S.A.</option>
+					     						
+						     						<option value="2918">2918&nbsp;-&nbsp;JOSE GARCIA DIAZ</option>
+					     						
+						     						<option value="2927">2927&nbsp;-&nbsp;ROMEO JOSE ANDRES SALMON DAVEY</option>
+					     						
+						     						<option value="2931">2931&nbsp;-&nbsp;EMPRESA ADUANERA OLIMPYA S.A.C. AGENTE DE ADUANA        </option>
+					     						
+						     						<option value="2936">2936&nbsp;-&nbsp;TITANIC AGENTES DE ADUANA S.A.</option>
+					     						
+						     						<option value="2945">2945&nbsp;-&nbsp;LIMA SERVICIOS ADUANEROS S.A. ( SALIMA S.A.)            </option>
+					     						
+						     						<option value="2954">2954&nbsp;-&nbsp;JUANA ZOILA BOLIVAR SORIANO</option>
+					     						
+						     						<option value="2959">2959&nbsp;-&nbsp;HANDELZOLL S.A.C.                                       </option>
+					     						
+						     						<option value="2968">2968&nbsp;-&nbsp;ADUANAS Y LOGISTICA S.A.C.</option>
+					     						
+						     						<option value="2972">2972&nbsp;-&nbsp;RAMSEY S.A. AGENTES DE ADUANA                           </option>
+					     						
+						     						<option value="2977">2977&nbsp;-&nbsp;QUELOPANA & CABALLERO SAC AGENCIA DE ADUANAS</option>
+					     						
+						     						<option value="2981">2981&nbsp;-&nbsp;AEROADUANA SAC.AGENTES AFIANZ.DE ADUANAS</option>
+					     						
+						     						<option value="2986">2986&nbsp;-&nbsp;ALEJANDRO ZAVALA S.A.</option>
+					     						
+						     						<option value="2990">2990&nbsp;-&nbsp;LUISA OLGA TAMAYO GALDOS</option>
+					     						
+						     						<option value="2995">2995&nbsp;-&nbsp;SEACER S.R.L. AGENTES AFIANZADOS DE ADUANA              </option>
+					     						
+						     						<option value="3007">3007&nbsp;-&nbsp;LUIS ENRIQUE HERRERA SILVA S.A.</option>
+					     						
+						     						<option value="3011">3011&nbsp;-&nbsp;AGENCIA DE ADUANA VENECIA S.A.C.                        </option>
+					     						
+						     						<option value="3039">3039&nbsp;-&nbsp;AGENTES CORPORATIVOS S.A.                               </option>
+					     						
+						     						<option value="3057">3057&nbsp;-&nbsp;M.C. LORET DE MOLA OPERADOR LOGISTICO S.A.C.            </option>
+					     						
+						     						<option value="3075">3075&nbsp;-&nbsp;KN PERU ADUANAS S.A.                                    </option>
+					     						
+						     						<option value="3084">3084&nbsp;-&nbsp;Q.MAR SOCIEDAD ANONIMA CERRADA AGENTE DE ADUANA</option>
+					     						
+						     						<option value="3093">3093&nbsp;-&nbsp;BROKERS ADUANEROS S.A.C.                                </option>
+					     						
+						     						<option value="3101">3101&nbsp;-&nbsp;THORI AGENTES DE ADUANA S.A.C.                          </option>
+					     						
+						     						<option value="3110">3110&nbsp;-&nbsp;EFRINSA AGENTES DE ADUANA S.A.                          </option>
+					     						
+						     						<option value="3138">3138&nbsp;-&nbsp;A.J. AGENTES DE ADUANAS S.A.C                           </option>
+					     						
+						     						<option value="3142">3142&nbsp;-&nbsp;REPRESENTANTES GENERALES ADUANEROS S.A.</option>
+					     						
+						     						<option value="3147">3147&nbsp;-&nbsp;SAN REMO OPERADOR LOGISTICO S.A.C.                      </option>
+					     						
+						     						<option value="3151">3151&nbsp;-&nbsp;SOCIEDAD ADUANERA DEL CALLAO S.A.                       </option>
+					     						
+						     						<option value="3156">3156&nbsp;-&nbsp;ADUANAS Y COMERCIO S.A.C. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="3160">3160&nbsp;-&nbsp;CORI Y PELOSI S.A.                                      </option>
+					     						
+						     						<option value="3165">3165&nbsp;-&nbsp;AGENCIA AFIANZADA DE ADUANA J. K.M. S.A .C.</option>
+					     						
+						     						<option value="3174">3174&nbsp;-&nbsp;GEP S.A. AGENCIA DE ADUANA                              </option>
+					     						
+						     						<option value="3183">3183&nbsp;-&nbsp;A & G AGENTES DE ADUANAS SAC                            </option>
+					     						
+						     						<option value="3188">3188&nbsp;-&nbsp;MONVAR S.A. AGENTES DE ADUANA                           </option>
+					     						
+						     						<option value="3192">3192&nbsp;-&nbsp;NEW CUSTOMS S.A.C.                                      </option>
+					     						
+						     						<option value="3197">3197&nbsp;-&nbsp;LEONIDAS HUMBERTO SOLANO MORALES                        </option>
+					     						
+						     						<option value="3200">3200&nbsp;-&nbsp;CONSORCIO ADUANERO TORRES S.A.C.</option>
+					     						
+						     						<option value="3219">3219&nbsp;-&nbsp;COMPAÑIA ADUANERA SOL DE ORO S.A.C.</option>
+					     						
+						     						<option value="3228">3228&nbsp;-&nbsp;AGENCIA DE ADUANA AQUARIO S.A.C.                        </option>
+					     						
+						     						<option value="3232">3232&nbsp;-&nbsp;SOCIEDAD VALDERRAMA S.A.C. AGENTES DE ADUANA            </option>
+					     						
+						     						<option value="3237">3237&nbsp;-&nbsp;NEOCORP S.A.C. AGENCIA DE ADUANA                        </option>
+					     						
+						     						<option value="3241">3241&nbsp;-&nbsp;JORGE A. ROSSI QUINTANA</option>
+					     						
+						     						<option value="3246">3246&nbsp;-&nbsp;ADUAGROUP S.A.C. AGENCIA DE ADUANA                      </option>
+					     						
+						     						<option value="3250">3250&nbsp;-&nbsp;LA NACIONAL S.A. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="3264">3264&nbsp;-&nbsp;EGL AGENCIA DE ADUANAS S.A.C.                           </option>
+					     						
+						     						<option value="3273">3273&nbsp;-&nbsp;RF INTERNATIONAL ADUANAS S.A.C.</option>
+					     						
+						     						<option value="3278">3278&nbsp;-&nbsp;DILIGENCIAS ADUANERAS S.A.</option>
+					     						
+						     						<option value="3282">3282&nbsp;-&nbsp;BOXPOOL AGENCIA DE ADUANAS S.A.C.                       </option>
+					     						
+						     						<option value="3287">3287&nbsp;-&nbsp;A.B.A. S.A. AGENTES DE ADUANA                           </option>
+					     						
+						     						<option value="3296">3296&nbsp;-&nbsp;PAN OCEANICA S.A.</option>
+					     						
+						     						<option value="3304">3304&nbsp;-&nbsp;SCHARFF & CIA. S.R.L.                                   </option>
+					     						
+						     						<option value="3307">3307&nbsp;-&nbsp;AGENCIAS UNIDAS ASOCIADAS S.A.C.</option>
+					     						
+						     						<option value="3331">3331&nbsp;-&nbsp;AGENTE DE ADUANA NEPTUNO S.A.</option>
+					     						
+						     						<option value="3386">3386&nbsp;-&nbsp;COKE MAR AGENTES DE ADUANA SOCIEDAD ANONIMA CERRADA     </option>
+					     						
+						     						<option value="3421">3421&nbsp;-&nbsp;ORION S.A.                                              </option>
+					     						
+						     						<option value="3476">3476&nbsp;-&nbsp;C.D.D.C. TECNICOS ADUANEROS S.A.C.                      </option>
+					     						
+						     						<option value="3494">3494&nbsp;-&nbsp;GUILLERMO MAS SA AGENTE AFIAZ ADUANA                    </option>
+					     						
+						     						<option value="3502">3502&nbsp;-&nbsp;REPRESENT.MORENO Y ASOCIADA S.R.L.</option>
+					     						
+						     						<option value="3584">3584&nbsp;-&nbsp;CARLOS CABEZAS PATTON</option>
+					     						
+						     						<option value="3593">3593&nbsp;-&nbsp;ALIVER S.A.</option>
+					     						
+						     						<option value="3601">3601&nbsp;-&nbsp;MIGUEL EDUARDO QUIÑONEZ CHAVEZ                          </option>
+					     						
+						     						<option value="3610">3610&nbsp;-&nbsp;PEDRO LUIS SILVA ALVARADO</option>
+					     						
+						     						<option value="3629">3629&nbsp;-&nbsp;JORGE GREGORIO ARRUNATEGUI JUAREZ</option>
+					     						
+						     						<option value="3638">3638&nbsp;-&nbsp;JUAN URBANO ALANIA ARIAS S.A.                           </option>
+					     						
+						     						<option value="3647">3647&nbsp;-&nbsp;AGENCIA DE ADUANA AMBASSADOR S.A.</option>
+					     						
+						     						<option value="3656">3656&nbsp;-&nbsp;CORPORACION LA NOIRE S.A.C.                             </option>
+					     						
+						     						<option value="3665">3665&nbsp;-&nbsp;SCANADUANA S.A.                                         </option>
+					     						
+						     						<option value="3674">3674&nbsp;-&nbsp;ROSSINE AURORA PERALES SANCHEZ</option>
+					     						
+						     						<option value="3683">3683&nbsp;-&nbsp;EL ANCLA S.A.</option>
+					     						
+						     						<option value="3692">3692&nbsp;-&nbsp;VASQUEZ TORRES JENNIE ZOILA</option>
+					     						
+						     						<option value="3700">3700&nbsp;-&nbsp;PHOENIX S.A.</option>
+					     						
+						     						<option value="3728">3728&nbsp;-&nbsp;ADUALINK S.A.C.                                         </option>
+					     						
+						     						<option value="3773">3773&nbsp;-&nbsp;CHAVEZ NORIEGA S.A.</option>
+					     						
+						     						<option value="3831">3831&nbsp;-&nbsp;BARRON & ASOCIADOS AGENTES DE ADUANA S.A.C.             </option>
+					     						
+						     						<option value="3840">3840&nbsp;-&nbsp;AMERICA ADUANERA S.A.C. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="3859">3859&nbsp;-&nbsp;AGENTES DE ADUANA CRISMAR S.A.C.</option>
+					     						
+						     						<option value="3868">3868&nbsp;-&nbsp;LOGISTICA MUNDIAL S.A.C. AGENCIA DE ADUANA              </option>
+					     						
+						     						<option value="3877">3877&nbsp;-&nbsp;J.V.AGENTES DE ADUANA S.A.                              </option>
+					     						
+						     						<option value="3886">3886&nbsp;-&nbsp;ADUATECNICA POSTAL S.A.</option>
+					     						
+						     						<option value="3895">3895&nbsp;-&nbsp;GAMARRA & CIA AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="3903">3903&nbsp;-&nbsp;DESPACHOS ADUANEROS CHAVIMOCHIC SAC</option>
+					     						
+						     						<option value="3912">3912&nbsp;-&nbsp;CYOPEX ADUANAS SAC</option>
+					     						
+						     						<option value="3921">3921&nbsp;-&nbsp;TRASLADOS ADUANEROS S.A.C.</option>
+					     						
+						     						<option value="3930">3930&nbsp;-&nbsp;R.R. ROMERO POGGI E HIJOS S.A.C.</option>
+					     						
+						     						<option value="3958">3958&nbsp;-&nbsp;TRANSGLOBAL CUSTOMS LOGISTIC AGENCIA DE ADUANAS SOCIEDAD</option>
+					     						
+						     						<option value="3967">3967&nbsp;-&nbsp;RBK AGENTES DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="3976">3976&nbsp;-&nbsp;MANEJOS INTEGRALES ADUANEROS S.A.                       </option>
+					     						
+						     						<option value="3985">3985&nbsp;-&nbsp;AGENCIA DE ADUANA JEAN S.A.C.                           </option>
+					     						
+						     						<option value="3994">3994&nbsp;-&nbsp;ABACUS LOGISTICA INTERNACIONAL S.A.C                    </option>
+					     						
+						     						<option value="4029">4029&nbsp;-&nbsp;ADUAMAR SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="4038">4038&nbsp;-&nbsp;AVM ADUANERA S.A.C. AGENTES AFIANZADOS DE ADUANAS       </option>
+					     						
+						     						<option value="4047">4047&nbsp;-&nbsp;CHOICE ADUANAS S.A.C                                    </option>
+					     						
+						     						<option value="4056">4056&nbsp;-&nbsp;ROBLEDO AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="4065">4065&nbsp;-&nbsp;AGENCIA DE ADUANA SANTAMARIA SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="4074">4074&nbsp;-&nbsp;GALAXY AGENCIA DE ADUANA SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="4083">4083&nbsp;-&nbsp;FOX ADUANAS S.A.C                                       </option>
+					     						
+						     						<option value="4092">4092&nbsp;-&nbsp;KSS OPERADOR DE COMERCIO EXTERIOR S.A.C.</option>
+					     						
+						     						<option value="4100">4100&nbsp;-&nbsp;MARQUEZ JAUREGUI CARLOS A.                              </option>
+					     						
+						     						<option value="4119">4119&nbsp;-&nbsp;L.B. GAYOSO S.A.C.                                      </option>
+					     						
+						     						<option value="4128">4128&nbsp;-&nbsp;D & S ASESORES DE ADUANA S.A.</option>
+					     						
+						     						<option value="4137">4137&nbsp;-&nbsp;AGENCIA DE ADUANA PRISMA SOCIEDAD ANONIMA CERRADA       </option>
+					     						
+						     						<option value="4146">4146&nbsp;-&nbsp;PADEMAR S.A.C.</option>
+					     						
+						     						<option value="4150">4150&nbsp;-&nbsp;PROADUANA S.A.                                          </option>
+					     						
+						     						<option value="4155">4155&nbsp;-&nbsp;LUXOR AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="4164">4164&nbsp;-&nbsp;OUTSOURCING ADUANAS SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="4173">4173&nbsp;-&nbsp;OPERADOR LOGISTICO SAN CARLOS S.A                       </option>
+					     						
+						     						<option value="4182">4182&nbsp;-&nbsp;AGENCIA DE ADUANAS INKADUANAS SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="4268">4268&nbsp;-&nbsp;ANTONIO G. SANTOYO GAMARRA</option>
+					     						
+						     						<option value="4277">4277&nbsp;-&nbsp;LUIS ENRIQUE RODRIGUEZ MONTELLANOS</option>
+					     						
+						     						<option value="4286">4286&nbsp;-&nbsp;PERU MUNDO S.A.</option>
+					     						
+						     						<option value="4295">4295&nbsp;-&nbsp;METROPOLITANA ADUANERA S.A.C.                           </option>
+					     						
+						     						<option value="4303">4303&nbsp;-&nbsp;BEAGLE AGENTES DE ADUANA S.A                            </option>
+					     						
+						     						<option value="4420">4420&nbsp;-&nbsp;K. P. LAYE S.A.</option>
+					     						
+						     						<option value="4484">4484&nbsp;-&nbsp;JOSE PERCY STIGLER ELIAS</option>
+					     						
+						     						<option value="4493">4493&nbsp;-&nbsp;ANCOMAR S.A.                                            </option>
+					     						
+						     						<option value="4731">4731&nbsp;-&nbsp;LOGISTICA DEL PACIFICO AGENTES AFIANZADOS DE ADUANAS SOC</option>
+					     						
+						     						<option value="4740">4740&nbsp;-&nbsp;SC ZAVALA S.A.C. AGENTES DE ADUANAS</option>
+					     						
+						     						<option value="4745">4745&nbsp;-&nbsp;AGENCIA DE ADUANA ARANDA S.A.                           </option>
+					     						
+						     						<option value="4754">4754&nbsp;-&nbsp;CESAR AUGUSTO VASQUEZ REBAZA                            </option>
+					     						
+						     						<option value="4759">4759&nbsp;-&nbsp;DISCOVERY LOGISTICA ADUANERA S.A.C.</option>
+					     						
+						     						<option value="4768">4768&nbsp;-&nbsp;TERRA ADUANERA S.A.C.</option>
+					     						
+						     						<option value="4772">4772&nbsp;-&nbsp;JACKS MARTINEZ ESQUECHE</option>
+					     						
+						     						<option value="4777">4777&nbsp;-&nbsp;CAPITAL AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="4781">4781&nbsp;-&nbsp;SALINAS OVIEDO JAIME</option>
+					     						
+						     						<option value="4786">4786&nbsp;-&nbsp;AURIEL AGENTES DE ADUANA SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="4790">4790&nbsp;-&nbsp;FERNANDO HUMBERTO RUIZ MORANTE</option>
+					     						
+						     						<option value="4795">4795&nbsp;-&nbsp;A. HARTRODT ADUANAS S.A.C.</option>
+					     						
+						     						<option value="4803">4803&nbsp;-&nbsp;MONTEVERDE ADUANERA S.A.C.</option>
+					     						
+						     						<option value="4808">4808&nbsp;-&nbsp;LUMEN S.A.C. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="4812">4812&nbsp;-&nbsp;JAL ADUANAS SAC</option>
+					     						
+						     						<option value="4821">4821&nbsp;-&nbsp;SOLUCIONES ADUANERAS S.A.</option>
+					     						
+						     						<option value="4826">4826&nbsp;-&nbsp;CARLOS MISAEL PANDURO DIAZ</option>
+					     						
+						     						<option value="4830">4830&nbsp;-&nbsp;FERRIVA ADUANAS S.A.C.</option>
+					     						
+						     						<option value="4844">4844&nbsp;-&nbsp;FLORENCIO FLAVIO HERRERA MALAGA</option>
+					     						
+						     						<option value="4849">4849&nbsp;-&nbsp;CONSORCIO GLOBAL PERU S.A.C. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="4853">4853&nbsp;-&nbsp;TRAMITES ADUANEROS S.A.C.                               </option>
+					     						
+						     						<option value="4858">4858&nbsp;-&nbsp;R&R LOGISTICA INTEGRAL S.A.C.</option>
+					     						
+						     						<option value="4862">4862&nbsp;-&nbsp;LIMATAC SRL</option>
+					     						
+						     						<option value="4867">4867&nbsp;-&nbsp;ADUAMERICA SOLUCIONES LOGISTICAS S.A.                   </option>
+					     						
+						     						<option value="4871">4871&nbsp;-&nbsp;LUIS ERNESTO CEGARRA BARRIOS</option>
+					     						
+						     						<option value="4880">4880&nbsp;-&nbsp;APOLO S.A.</option>
+					     						
+						     						<option value="4885">4885&nbsp;-&nbsp;ADUANAS & LOGISTICA INTEGRAL S.A.C.</option>
+					     						
+						     						<option value="4894">4894&nbsp;-&nbsp;LOBATO OPERADOR LOGISTICO SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="4899">4899&nbsp;-&nbsp;ACROPOLIS AGENTES DE ADUANA S.A.</option>
+					     						
+						     						<option value="4902">4902&nbsp;-&nbsp;Z LOGISTIC GROUP ADUANAS S.A.C.                         </option>
+					     						
+						     						<option value="4907">4907&nbsp;-&nbsp;QUIROS MOYANO S.A.</option>
+					     						
+						     						<option value="4911">4911&nbsp;-&nbsp;AGENCIA DE ADUANAS CRISTEC SERVICE SOCIEDAD ANONIMA CERR</option>
+					     						
+						     						<option value="4920">4920&nbsp;-&nbsp;TLI ADUANAS S.A.C.                                      </option>
+					     						
+						     						<option value="4934">4934&nbsp;-&nbsp;ELDER ARACELLY VASQUEZ ARANDA</option>
+					     						
+						     						<option value="4939">4939&nbsp;-&nbsp;AXIS GL AGENCIA DE ADUANA S.A.C                         </option>
+					     						
+						     						<option value="4948">4948&nbsp;-&nbsp;ITUMAR AGENTES DE ADUANA S.A.                           </option>
+					     						
+						     						<option value="4957">4957&nbsp;-&nbsp;FAR ADUANAS S.A.C.</option>
+					     						
+						     						<option value="4966">4966&nbsp;-&nbsp;CHUNG & ASOCIADOS AGENCIA DE ADUANAS S.A.C.             </option>
+					     						
+						     						<option value="4975">4975&nbsp;-&nbsp;AGENCIA DE ADUANA VILCAPOMA HERMANOS SOCIEDAD COMERCIAL </option>
+					     						
+						     						<option value="4984">4984&nbsp;-&nbsp;INTERNATIONAL BUSSINES CORPORATION S.A. AGENTE DE ADUANA</option>
+					     						
+						     						<option value="4993">4993&nbsp;-&nbsp;CLP OPERADOR LOGISTICO S.A.C</option>
+					     						
+						     						<option value="4998">4998&nbsp;-&nbsp;CENTROMAR S.A. AG. DE AD.                               </option>
+					     						
+						     						<option value="5005">5005&nbsp;-&nbsp;SAN LORENZO DEL SUR S.A.</option>
+					     						
+						     						<option value="5023">5023&nbsp;-&nbsp;MODESTA CERPA SALVATIERRA</option>
+					     						
+						     						<option value="5032">5032&nbsp;-&nbsp;JOAL S.A. AGENCIA AFIANZADA DE ADUANA</option>
+					     						
+						     						<option value="5041">5041&nbsp;-&nbsp;JOSE RUIZ GONZALES                                      </option>
+					     						
+						     						<option value="5050">5050&nbsp;-&nbsp;ORION ADUANERA S.A. AG. DE AD.</option>
+					     						
+						     						<option value="5096">5096&nbsp;-&nbsp;MARIMPEX S.A. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="5104">5104&nbsp;-&nbsp;SERVICIOS DE ADUANA S.R.LTDA.</option>
+					     						
+						     						<option value="5258">5258&nbsp;-&nbsp;LA CANDELARIA S.A. AGENCIA DE ADUANA                    </option>
+					     						
+						     						<option value="5267">5267&nbsp;-&nbsp;TRANSAMERICA AGENTES DE ADUANA S.A.</option>
+					     						
+						     						<option value="5276">5276&nbsp;-&nbsp;DIAZ DIAZ AGENTE DE ADUANA S.A.</option>
+					     						
+						     						<option value="5285">5285&nbsp;-&nbsp;DESPACHADORA QUIROZ S.A.C.                              </option>
+					     						
+						     						<option value="5294">5294&nbsp;-&nbsp;BOBREK S.A. AGENCIA DE ADUANA                           </option>
+					     						
+						     						<option value="5302">5302&nbsp;-&nbsp;DOUANE INTERNACIONAL S.A.</option>
+					     						
+						     						<option value="5410">5410&nbsp;-&nbsp;G.S. DESPACHOS S.A.                                     </option>
+					     						
+						     						<option value="5429">5429&nbsp;-&nbsp;GRUPO ADUANERO DEL PACIFICO S.A.</option>
+					     						
+						     						<option value="5456">5456&nbsp;-&nbsp;AGENTES DE ADUANA CASTELLANO S.A.</option>
+					     						
+						     						<option value="5474">5474&nbsp;-&nbsp;DAFER S.A. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="5483">5483&nbsp;-&nbsp;MARAD S.A. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="5492">5492&nbsp;-&nbsp;AGENCIA DE ADUANA DELTA S.A.</option>
+					     						
+						     						<option value="5631">5631&nbsp;-&nbsp;PERU INTERNATIONAL CUSTOMS SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="5636">5636&nbsp;-&nbsp;UCL ADUANAS S.A.C.</option>
+					     						
+						     						<option value="5640">5640&nbsp;-&nbsp;D & E CHAINS  AGENCIA DE ADUANAS S.A.C</option>
+					     						
+						     						<option value="5654">5654&nbsp;-&nbsp;MARIGIN S.A.                                            </option>
+					     						
+						     						<option value="5659">5659&nbsp;-&nbsp;CORPORACION AFIANZADA DE SERVICIOS ADUANEROS S.A.C.</option>
+					     						
+						     						<option value="5668">5668&nbsp;-&nbsp;AGENCIA DE ADUANA HUMBOLDT S.A.C.</option>
+					     						
+						     						<option value="5672">5672&nbsp;-&nbsp;ATLANTIC S.A.</option>
+					     						
+						     						<option value="5677">5677&nbsp;-&nbsp;ITURRI AGENTE DE ADUANA SAC</option>
+					     						
+						     						<option value="5681">5681&nbsp;-&nbsp;ADUAMERICA S.A.                                         </option>
+					     						
+						     						<option value="5686">5686&nbsp;-&nbsp;LOGISTICA LOS OLIVOS S.A. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="5690">5690&nbsp;-&nbsp;AGENTES DE ADUANA SAN NICOLAS S.A.                      </option>
+					     						
+						     						<option value="5695">5695&nbsp;-&nbsp;AGENCIA DE ADUANA SPEED ADUANAS S.A.C.</option>
+					     						
+						     						<option value="5703">5703&nbsp;-&nbsp;INTERNATIONAL CUSTOMS CORPORATION S.A.C.</option>
+					     						
+						     						<option value="5708">5708&nbsp;-&nbsp;DOGANA SA AGENTES AFIANZADOS DE ADUANAS                 </option>
+					     						
+						     						<option value="5712">5712&nbsp;-&nbsp;E-ADUANAS S.A.C.</option>
+					     						
+						     						<option value="5721">5721&nbsp;-&nbsp;B & C ADUANAS S.A.C</option>
+					     						
+						     						<option value="5730">5730&nbsp;-&nbsp;IBERICA ADUANERA S.A</option>
+					     						
+						     						<option value="5749">5749&nbsp;-&nbsp;ISCO ADUANA S.A.C.</option>
+					     						
+						     						<option value="5758">5758&nbsp;-&nbsp;E. FALCON ADUANAS SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="5767">5767&nbsp;-&nbsp;AGENCIA DE ADUANA SCHARFF S.A.                          </option>
+					     						
+						     						<option value="5776">5776&nbsp;-&nbsp;OPERADORES LOGISTICOS MERCURIO SOCIEDAD COMERCIAL DE RES</option>
+					     						
+						     						<option value="5785">5785&nbsp;-&nbsp;RIGER  AGENTE AFIANZADO DE ADUANA  S.A.C.</option>
+					     						
+						     						<option value="5794">5794&nbsp;-&nbsp;BLOG ADUANAS S.A.C.                                     </option>
+					     						
+						     						<option value="5807">5807&nbsp;-&nbsp;AGENCIA DE ADUANA PARMA S.A.                            </option>
+					     						
+						     						<option value="5811">5811&nbsp;-&nbsp;ADUANAVES S.A.                                          </option>
+					     						
+						     						<option value="5816">5816&nbsp;-&nbsp;ASUNTOS ADUANEROS S.A.</option>
+					     						
+						     						<option value="5820">5820&nbsp;-&nbsp;AGENCIA DE ADUANA PEGASO S.A.</option>
+					     						
+						     						<option value="5825">5825&nbsp;-&nbsp;GABU S.A.                                               </option>
+					     						
+						     						<option value="5834">5834&nbsp;-&nbsp;UNIADUANAS S.A.                                         </option>
+					     						
+						     						<option value="5839">5839&nbsp;-&nbsp;ADUAEXPRESS S.A.C.</option>
+					     						
+						     						<option value="5843">5843&nbsp;-&nbsp;NAZCA S.A. AGENCIA DE ADUANA                            </option>
+					     						
+						     						<option value="5848">5848&nbsp;-&nbsp;LOGISTICA NOHAT SOCIEDAD ANONIMA CERRADA AGENCIA DE ADUA</option>
+					     						
+						     						<option value="5852">5852&nbsp;-&nbsp;ELDER VASQUEZ Y ASOCIADOS S.A.</option>
+					     						
+						     						<option value="5857">5857&nbsp;-&nbsp;URANO GROUP SOCIEDAD ANONIMA CERRADA                    </option>
+					     						
+						     						<option value="5861">5861&nbsp;-&nbsp;AEROMARITIMO DEL PACIFICO S.A.</option>
+					     						
+						     						<option value="5866">5866&nbsp;-&nbsp;S&S CORPORACION ADUANERA S.A.                           </option>
+					     						
+						     						<option value="5870">5870&nbsp;-&nbsp;EL PACIFICO AGENCIA DE ADUANAS S.A.                     </option>
+					     						
+						     						<option value="5875">5875&nbsp;-&nbsp;GLOBAL CUSTOMS SERVICE S.A.C AGENTES DE ADUANAS</option>
+					     						
+						     						<option value="5884">5884&nbsp;-&nbsp;AIROCEAN ADUANAS S.A.C                                  </option>
+					     						
+						     						<option value="5889">5889&nbsp;-&nbsp;AGENCIA DE ADUANAS SCORPIO S.A.</option>
+					     						
+						     						<option value="5893">5893&nbsp;-&nbsp;GESTION LOGISTICA INTEGRAL S.A.</option>
+					     						
+						     						<option value="5898">5898&nbsp;-&nbsp;CONVENIOS ADUANEROS S.A.</option>
+					     						
+						     						<option value="5901">5901&nbsp;-&nbsp;GRUPO PML S.A.C  AGENTES DE ADUANAS                     </option>
+					     						
+						     						<option value="5906">5906&nbsp;-&nbsp;ALFA Y OMEGA S.A.</option>
+					     						
+						     						<option value="5910">5910&nbsp;-&nbsp;ADM ADUANAS S.A.C.                                      </option>
+					     						
+						     						<option value="5924">5924&nbsp;-&nbsp;AGENCIA DE ADUANA INTERAMERICANA S.A.                   </option>
+					     						
+						     						<option value="5929">5929&nbsp;-&nbsp;GLOBAL ADUANERA SAC LOGISTICA INTEGRAL</option>
+					     						
+						     						<option value="5933">5933&nbsp;-&nbsp;MERCURIO SERVICIOS ADUANEROS S.R.L.                     </option>
+					     						
+						     						<option value="5938">5938&nbsp;-&nbsp;WORLD COMPANY CUSTOMS S.A.C.</option>
+					     						
+						     						<option value="5942">5942&nbsp;-&nbsp;AGENCIA DE ADUANA ULTRAMAR S.A.                         </option>
+					     						
+						     						<option value="5947">5947&nbsp;-&nbsp;CRANE WORLDWIDE AGENCIA DE ADUANAS SAC                  </option>
+					     						
+						     						<option value="5951">5951&nbsp;-&nbsp;SERVICIOS INTERNACIONALES CHICLAYO S.A.</option>
+					     						
+						     						<option value="5956">5956&nbsp;-&nbsp;INVERSIONES ADUANERAS AGENTE DE ADUANA SAC</option>
+					     						
+						     						<option value="5965">5965&nbsp;-&nbsp;MUELLES AGENTES DE ADUANAS S.A.C.                       </option>
+					     						
+						     						<option value="5974">5974&nbsp;-&nbsp;HANSA ADUANAS SOCIEDAD ANONIMA                          </option>
+					     						
+						     						<option value="5979">5979&nbsp;-&nbsp;PRESTACIONES ADUANERAS S.A.</option>
+					     						
+						     						<option value="5983">5983&nbsp;-&nbsp;CONTINENTAL AGENCIA DE ADUANA SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="5988">5988&nbsp;-&nbsp;MOGARTOFF Y SUITO S.A.</option>
+					     						
+						     						<option value="6018">6018&nbsp;-&nbsp;CLAUSSEN AGENTES DE ADUANA SOCIEDAD ANONIMA CERRADA OPER</option>
+					     						
+						     						<option value="6022">6022&nbsp;-&nbsp;FLORENTINO MACEDA ESCAMILLA</option>
+					     						
+						     						<option value="6027">6027&nbsp;-&nbsp;AS-LINE AGENTES DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="6031">6031&nbsp;-&nbsp;CARLOS ANTONIO GOMEZ LEON S.A.</option>
+					     						
+						     						<option value="6036">6036&nbsp;-&nbsp;TOP EXPRESS AGENTES DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="6040">6040&nbsp;-&nbsp;MACEDA LA ROSA IDA MATILDE</option>
+					     						
+						     						<option value="6045">6045&nbsp;-&nbsp;SOPORTE ADUANERO SOCIEDAD ANONIMA CERRADA - SOPORTE ADUA</option>
+					     						
+						     						<option value="6054">6054&nbsp;-&nbsp;121212 S.A.C.</option>
+					     						
+						     						<option value="6059">6059&nbsp;-&nbsp;DESPACHOS INTERNACIONALES S.A.                          </option>
+					     						
+						     						<option value="6063">6063&nbsp;-&nbsp;JEM LOGISTIC S.A.C</option>
+					     						
+						     						<option value="6068">6068&nbsp;-&nbsp;JAVIER DANIEL FERRADAS</option>
+					     						
+						     						<option value="6081">6081&nbsp;-&nbsp;AGENCIA DE ADUANA SION S.A.C.                           </option>
+					     						
+						     						<option value="6086">6086&nbsp;-&nbsp;SEMINARIO GUARDERAS GUILLERMO</option>
+					     						
+						     						<option value="6095">6095&nbsp;-&nbsp;OLIVARES S.A.</option>
+					     						
+						     						<option value="6103">6103&nbsp;-&nbsp;L0S ANGELES S.A.</option>
+					     						
+						     						<option value="6108">6108&nbsp;-&nbsp;PINTO DEL ROSARIO LEONOR NURY  / AGP CUSTOMS SERVICE    </option>
+					     						
+						     						<option value="6112">6112&nbsp;-&nbsp;SUR PACIFICO PERU S.A.</option>
+					     						
+						     						<option value="6117">6117&nbsp;-&nbsp;BROKERS VERA ADUANEROS SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="6121">6121&nbsp;-&nbsp;GONZALES ORBEGOSO</option>
+					     						
+						     						<option value="6126">6126&nbsp;-&nbsp;TECNOLOGIA Y LOGISTICA COMERCIAL S.A.C.</option>
+					     						
+						     						<option value="6130">6130&nbsp;-&nbsp;AGENCIA PARIYAS S.A.</option>
+					     						
+						     						<option value="6135">6135&nbsp;-&nbsp;PARTNER LOGISTIC MGL S.A.C.                             </option>
+					     						
+						     						<option value="6144">6144&nbsp;-&nbsp;GRUPO EMPRESARIAL DE COMERCIO EXTERIOR S.A.             </option>
+					     						
+						     						<option value="6153">6153&nbsp;-&nbsp;LINK LOGISTICA PERU S.A.                                </option>
+					     						
+						     						<option value="6158">6158&nbsp;-&nbsp;AGENCIA DE ADUANA MACROMAR S.A.                         </option>
+					     						
+						     						<option value="6167">6167&nbsp;-&nbsp;R. BOURONCLE Y ASOCIADOS S.A. AGENTES DE ADUANA         </option>
+					     						
+						     						<option value="6171">6171&nbsp;-&nbsp;KBS LOGISTIC S.A.C.</option>
+					     						
+						     						<option value="6176">6176&nbsp;-&nbsp;DESPACHANTES S.A.</option>
+					     						
+						     						<option value="6180">6180&nbsp;-&nbsp;IJI S.A.C. AGENTES DE ADUANA                            </option>
+					     						
+						     						<option value="6194">6194&nbsp;-&nbsp;MONTEVERDE & ASOCIADOS AGENTES DE ADUANA S.A.           </option>
+					     						
+						     						<option value="6199">6199&nbsp;-&nbsp;CORPORACION MAREC - AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="6207">6207&nbsp;-&nbsp;AGENCIA DE ADUANA AVIOMAR PERU S.A.C.                   </option>
+					     						
+						     						<option value="6211">6211&nbsp;-&nbsp;LUIS ALBERTO GONZALES ORBEGOSO</option>
+					     						
+						     						<option value="6216">6216&nbsp;-&nbsp;DDP ADUANAS S.A.C.                                      </option>
+					     						
+						     						<option value="6234">6234&nbsp;-&nbsp;CAP LOGISTIC ADUANAS S.A.C.                             </option>
+					     						
+						     						<option value="6239">6239&nbsp;-&nbsp;GINOCCHIO JULIO Y CIA.</option>
+					     						
+						     						<option value="6243">6243&nbsp;-&nbsp;MEGADUANAS PERU SOCIEDAD ANONIMA CERRADA                </option>
+					     						
+						     						<option value="6248">6248&nbsp;-&nbsp;MOLERO E HIJO S.A.C.                                    </option>
+					     						
+						     						<option value="6252">6252&nbsp;-&nbsp;AGENCIA DE ADUANA SARA'H S.A.C.</option>
+					     						
+						     						<option value="6257">6257&nbsp;-&nbsp;ROMERO Y CIA. AGENTES S.C.R.L.</option>
+					     						
+						     						<option value="6261">6261&nbsp;-&nbsp;MEGA CUSTOMS LOGISTIC S.A.C. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="6266">6266&nbsp;-&nbsp;LUIS MIGUEL VIACAVA VALLE</option>
+					     						
+						     						<option value="6270">6270&nbsp;-&nbsp;FEROGA OPERADOR INTERNACIONAL S.A.C.</option>
+					     						
+						     						<option value="6275">6275&nbsp;-&nbsp;MOCHA AGENCIA AFIANZADA DE ADUANA S.A.</option>
+					     						
+						     						<option value="6284">6284&nbsp;-&nbsp;AGENCIA DE ADUANA JULIO C ESCUZA P S</option>
+					     						
+						     						<option value="6289">6289&nbsp;-&nbsp;AGENCIA DE ADUANAS CINCO CONTINENTES SOCIEDAD COMERCIAL </option>
+					     						
+						     						<option value="6293">6293&nbsp;-&nbsp;PAITA SULLANA S.A.</option>
+					     						
+						     						<option value="6298">6298&nbsp;-&nbsp;VILDOSO ALBARRACIN AGENTES DE ADUANA S. A. C.           </option>
+					     						
+						     						<option value="6301">6301&nbsp;-&nbsp;OLIMPEX AGENCIA DE ADUANA S.A.C.                        </option>
+					     						
+						     						<option value="6306">6306&nbsp;-&nbsp;OCR ADUANAS  S.A.C.                                     </option>
+					     						
+						     						<option value="6310">6310&nbsp;-&nbsp;W. MERCHOR S.A.C.                                       </option>
+					     						
+						     						<option value="6315">6315&nbsp;-&nbsp;PHOENIX S.A.C. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="6324">6324&nbsp;-&nbsp;DEPISA S.A.                                             </option>
+					     						
+						     						<option value="6329">6329&nbsp;-&nbsp;AGENCIA DE ADUANA SANTA ISABEL S.A.C.                   </option>
+					     						
+						     						<option value="6333">6333&nbsp;-&nbsp;ESPLENDOR S.A.C. AGENCIA DE ADUANAS - ESSAC AGENCIA DE A</option>
+					     						
+						     						<option value="6342">6342&nbsp;-&nbsp;INTEROCEANICA AGENCIA DE ADUANA S.A.C.                  </option>
+					     						
+						     						<option value="6347">6347&nbsp;-&nbsp;C & D S.A.</option>
+					     						
+						     						<option value="6351">6351&nbsp;-&nbsp;DACES ADUANAS S.A.C.</option>
+					     						
+						     						<option value="6356">6356&nbsp;-&nbsp;SALINAS & CASARETTO AGNTS.ASOC.ADUANA SA</option>
+					     						
+						     						<option value="6365">6365&nbsp;-&nbsp;URPHY S.A. AGENTES DE ADUANA                            </option>
+					     						
+						     						<option value="6374">6374&nbsp;-&nbsp;AGENCIA DE ADUANA CHICLAYO S.A.</option>
+					     						
+						     						<option value="6379">6379&nbsp;-&nbsp;PERU CUSTOMS ADVISER S.A.C.                             </option>
+					     						
+						     						<option value="6383">6383&nbsp;-&nbsp;NEW PORT S.A. AGENTES AFIANZADOS DE ADUANA</option>
+					     						
+						     						<option value="6388">6388&nbsp;-&nbsp;CEVA PERU ADUANAS S.A.C.                                </option>
+					     						
+						     						<option value="6392">6392&nbsp;-&nbsp;AGENCIA DE ADUANA GECSA S.A.</option>
+					     						
+						     						<option value="6397">6397&nbsp;-&nbsp;LONGHI & ALMIRON S.A.C. AGENTES DE ADUANAS              </option>
+					     						
+						     						<option value="6400">6400&nbsp;-&nbsp;TECNOLOGIA EN SERV AGENTES DE ADUANA SA</option>
+					     						
+						     						<option value="6405">6405&nbsp;-&nbsp;HERMES AGENCIA DE ADUANA S.A.C.                         </option>
+					     						
+						     						<option value="6414">6414&nbsp;-&nbsp;CMC LOGISTIC´S S.A.C.</option>
+					     						
+						     						<option value="6419">6419&nbsp;-&nbsp;ACTIVIDADES ADUANERAS PACASMAYO S.A.</option>
+					     						
+						     						<option value="6423">6423&nbsp;-&nbsp;CLI GESTIONES ADUANERAS S.A.</option>
+					     						
+						     						<option value="6428">6428&nbsp;-&nbsp;DANTE MARCELINO ALFARO BENITES</option>
+					     						
+						     						<option value="6432">6432&nbsp;-&nbsp;RPC OPERADORES DE COMERCIO EXTERIOR SAC</option>
+					     						
+						     						<option value="6437">6437&nbsp;-&nbsp;ADUANERA CAPRICORNIO S.A. AGENTES DE ADUANA             </option>
+					     						
+						     						<option value="6446">6446&nbsp;-&nbsp;ADUASUR SOCIEDAD ANONIMA</option>
+					     						
+						     						<option value="6455">6455&nbsp;-&nbsp;AGENCIA DE ADUANAS UNION S.A.</option>
+					     						
+						     						<option value="6464">6464&nbsp;-&nbsp;EL NAVEGANTE AGENCIA DE ADUANA S.A.                     </option>
+					     						
+						     						<option value="6469">6469&nbsp;-&nbsp;ENLACE ADUANAS SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="6473">6473&nbsp;-&nbsp;BROKERAGE SOCIEDAD ANONIMA AGENTE DE ADUANA</option>
+					     						
+						     						<option value="6478">6478&nbsp;-&nbsp;CACH AGENTES DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="6482">6482&nbsp;-&nbsp;AGENCIA DE ADUANA ANTANA SOCIEDAD ANONIMA               </option>
+					     						
+						     						<option value="6487">6487&nbsp;-&nbsp;LIMANDINA SOCIEDAD ANONIMA                              </option>
+					     						
+						     						<option value="6491">6491&nbsp;-&nbsp;SALAS E HIJOS SOCIEDAD ANONIMA                          </option>
+					     						
+						     						<option value="6496">6496&nbsp;-&nbsp;ANTARES ADUANAS S.A.C.                                  </option>
+					     						
+						     						<option value="6504">6504&nbsp;-&nbsp;JG ADUANAS LOGISTIC SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="6509">6509&nbsp;-&nbsp;LUDOMAR AGENCIA DE ADUANA SOCIEDAD ANONIMA              </option>
+					     						
+						     						<option value="6513">6513&nbsp;-&nbsp;R Y M AGENTES DE ADUANA S.A.                            </option>
+					     						
+						     						<option value="6522">6522&nbsp;-&nbsp;ASESORES PARA UN MUNDO GLOBALIZADO S.A.-ASEMG S.A.</option>
+					     						
+						     						<option value="6531">6531&nbsp;-&nbsp;F & F SOLUCIONES ADUANERAS S.A.C.</option>
+					     						
+						     						<option value="6536">6536&nbsp;-&nbsp;M & MARGONPAZ S.A.</option>
+					     						
+						     						<option value="6540">6540&nbsp;-&nbsp;ALEFERO OPERADOR INTERNACIONAL S.A.C.</option>
+					     						
+						     						<option value="6545">6545&nbsp;-&nbsp;DESPACHOS ADUANEROS TRUJILLO S.A.C.                     </option>
+					     						
+						     						<option value="6554">6554&nbsp;-&nbsp;SERVICIOS ADUANEROS SALAVERRY  S.A.                     </option>
+					     						
+						     						<option value="6559">6559&nbsp;-&nbsp;CPC ADUANAS S.A.C.</option>
+					     						
+						     						<option value="6563">6563&nbsp;-&nbsp;CALIFORNIA S.A.                                         </option>
+					     						
+						     						<option value="6568">6568&nbsp;-&nbsp;MUNDO GLOBAL ADUANERO SOCIEDAD ANONIMA CERRADA          </option>
+					     						
+						     						<option value="6572">6572&nbsp;-&nbsp;GRACIELA FLORES R. S.A.</option>
+					     						
+						     						<option value="6577">6577&nbsp;-&nbsp;UNIADUANAS AGENTE DE ADUANAS S.A.C.                     </option>
+					     						
+						     						<option value="6581">6581&nbsp;-&nbsp;GARCIA CALDERON S.A. AGENTES DE ADUANA                  </option>
+					     						
+						     						<option value="6586">6586&nbsp;-&nbsp;AGENCIA DE ADUANAS MORCAS S.A.C.                        </option>
+					     						
+						     						<option value="6595">6595&nbsp;-&nbsp;M & C S.A. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="6603">6603&nbsp;-&nbsp;M&F INT´L CUSTOM SAC</option>
+					     						
+						     						<option value="6612">6612&nbsp;-&nbsp;A & R EXPRESS AGENTE DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="6621">6621&nbsp;-&nbsp;DESPACHOS Y SERVICIOS ADUANEROS S.A.C.</option>
+					     						
+						     						<option value="6630">6630&nbsp;-&nbsp;R & P OPERADOR LOGISTICO S.A.C.</option>
+					     						
+						     						<option value="6644">6644&nbsp;-&nbsp;RIO ALTO S.A. AGENTES DE ADUANA                         </option>
+					     						
+						     						<option value="6649">6649&nbsp;-&nbsp;MAKROADUANAS S.A.C.</option>
+					     						
+						     						<option value="6653">6653&nbsp;-&nbsp;SERVICIOS INTEGRALES EN COMERCIO EXTERIOR SOC.ANON.     </option>
+					     						
+						     						<option value="6658">6658&nbsp;-&nbsp;KONEKTA ADUANAS S.A.C.                                  </option>
+					     						
+						     						<option value="6662">6662&nbsp;-&nbsp;ADUANERA SUDAMERICANA S.A.</option>
+					     						
+						     						<option value="6667">6667&nbsp;-&nbsp;UNIVERSO SUPPLY CHAIN MANAGEMENT S.A.C.</option>
+					     						
+						     						<option value="6671">6671&nbsp;-&nbsp;CHIMU S.A.</option>
+					     						
+						     						<option value="6676">6676&nbsp;-&nbsp;EUROADUANAS S.A.C. AGENCIA DE ADUANA                    </option>
+					     						
+						     						<option value="6680">6680&nbsp;-&nbsp;ADUANERA SAMANCO S.A.</option>
+					     						
+						     						<option value="6685">6685&nbsp;-&nbsp;ADUANA LOGISTIC CORPORATION  S.A.C.</option>
+					     						
+						     						<option value="6694">6694&nbsp;-&nbsp;LOGISTICA KAMIL S.A.C. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="6699">6699&nbsp;-&nbsp;AGENCIA DE ADUANAS J Y N ASOCIADOS S.A.</option>
+					     						
+						     						<option value="6702">6702&nbsp;-&nbsp;RED ADUANERA S.A.C.</option>
+					     						
+						     						<option value="6707">6707&nbsp;-&nbsp;REPRESENTACIONES ADUANERAS  S.A.</option>
+					     						
+						     						<option value="6711">6711&nbsp;-&nbsp;GLOBAL ADUANA SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="6720">6720&nbsp;-&nbsp;AAT CUSTOMS SOLUTIONS S.A.C.</option>
+					     						
+						     						<option value="6725">6725&nbsp;-&nbsp;ANTARES S.A.</option>
+					     						
+						     						<option value="6734">6734&nbsp;-&nbsp;DESPACHOS ADUANEROS CHIMBOTE S.A.</option>
+					     						
+						     						<option value="6739">6739&nbsp;-&nbsp;KUEHNE + NAGEL S.A.                                     </option>
+					     						
+						     						<option value="6743">6743&nbsp;-&nbsp;AGENCIA DE ADUANA EL SANTA S.A.</option>
+					     						
+						     						<option value="6752">6752&nbsp;-&nbsp;MULTISERVICIOS ADUANEROS S.A.</option>
+					     						
+						     						<option value="6757">6757&nbsp;-&nbsp;AGENCIA DE ADUANA MONTE SION S.A.C.</option>
+					     						
+						     						<option value="6761">6761&nbsp;-&nbsp;MACORD AG. DE AD. AFIANZADOS S.A.</option>
+					     						
+						     						<option value="6766">6766&nbsp;-&nbsp;LA HERRADURA AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="6770">6770&nbsp;-&nbsp;OPERACIONES ADUANERAS CHAVIN S.A.                       </option>
+					     						
+						     						<option value="6775">6775&nbsp;-&nbsp;JRC ADUANAS S.A.</option>
+					     						
+						     						<option value="6784">6784&nbsp;-&nbsp;ADUAGARCIA S.A.C.</option>
+					     						
+						     						<option value="6789">6789&nbsp;-&nbsp;DINAMIC S.A. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="6793">6793&nbsp;-&nbsp;CRF ADUANAS S.A.C.</option>
+					     						
+						     						<option value="6798">6798&nbsp;-&nbsp;AGENCIA DE ADUANA MULTIMAR S.A.</option>
+					     						
+						     						<option value="6801">6801&nbsp;-&nbsp;LOGISTICA INTERNACIONAL ADUANERA S.A.C.                 </option>
+					     						
+						     						<option value="6810">6810&nbsp;-&nbsp;ASESORES INTEGRALES V & V AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="6815">6815&nbsp;-&nbsp;SERVICIOS AERO MARITIMOS S.A.C.                         </option>
+					     						
+						     						<option value="6824">6824&nbsp;-&nbsp;DESPACHOS LONEX S.A.</option>
+					     						
+						     						<option value="6829">6829&nbsp;-&nbsp;AGENCIA DE ADUANA CACERES E.I.R.L.</option>
+					     						
+						     						<option value="6833">6833&nbsp;-&nbsp;MARIGMAR S.A.                                           </option>
+					     						
+						     						<option value="6838">6838&nbsp;-&nbsp;LOGISTIC TRAVEL ILO S.A.C.                              </option>
+					     						
+						     						<option value="6842">6842&nbsp;-&nbsp;AGENCIA DE ADUANA AGENTES INTERNACIONALES S.A.</option>
+					     						
+						     						<option value="6847">6847&nbsp;-&nbsp;SURJADUANAS S.A.C. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="6851">6851&nbsp;-&nbsp;COSTA SUR SOCIEDAD ANONIMA AGENCIA DE ADUANAS           </option>
+					     						
+						     						<option value="6856">6856&nbsp;-&nbsp;MARINE PORT LOGISTICS AGENCIA DE ADUANAS S.A.C.         </option>
+					     						
+						     						<option value="6860">6860&nbsp;-&nbsp;VICTOR H. ZAVALA VILLUTTINI</option>
+					     						
+						     						<option value="6865">6865&nbsp;-&nbsp;PJ AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="6874">6874&nbsp;-&nbsp;ADUANACIONAL S.A. AGENTE DE ADUANA ADUANACIONAL</option>
+					     						
+						     						<option value="6879">6879&nbsp;-&nbsp;AMERICAN SERVICE S.A.</option>
+					     						
+						     						<option value="6883">6883&nbsp;-&nbsp;AGENCIA DE ADUANA COMEX S.A.C.                          </option>
+					     						
+						     						<option value="6888">6888&nbsp;-&nbsp;PALPA S.A.</option>
+					     						
+						     						<option value="6892">6892&nbsp;-&nbsp;SLI ADUANAS S.A.C.                                      </option>
+					     						
+						     						<option value="6897">6897&nbsp;-&nbsp;AGENCET S.A. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="6900">6900&nbsp;-&nbsp;SAVAR CORPORACION LOGISTICA SOCIEDAD ANONIMA</option>
+					     						
+						     						<option value="6914">6914&nbsp;-&nbsp;TRABAJOS ADUANEROS S.A</option>
+					     						
+						     						<option value="6919">6919&nbsp;-&nbsp;ADUANA Y LOGISTICA INTERNACIONAL S.A.C.</option>
+					     						
+						     						<option value="6923">6923&nbsp;-&nbsp;LA NOIRE URQUIZO JOSE ANTONIO</option>
+					     						
+						     						<option value="6928">6928&nbsp;-&nbsp;GESTION ADUANERA Y LOGISTICA S.A.C.</option>
+					     						
+						     						<option value="6932">6932&nbsp;-&nbsp;AGENCIA DE ADUANA ATLANTA S.A.                          </option>
+					     						
+						     						<option value="6937">6937&nbsp;-&nbsp;STEEB INTERLOGISTIC COMPANY S.A.C. ADUANAS - SICSAC ADUA</option>
+					     						
+						     						<option value="6941">6941&nbsp;-&nbsp;IKE SA AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="6946">6946&nbsp;-&nbsp;LIP ADUANAS S.A.                                        </option>
+					     						
+						     						<option value="6950">6950&nbsp;-&nbsp;SERVICIOS ADUANEROS INTEGRADOS SOCIEDAD ANONIMA         </option>
+					     						
+						     						<option value="6955">6955&nbsp;-&nbsp;ADUANERA INTEGRAL SAC</option>
+					     						
+						     						<option value="6964">6964&nbsp;-&nbsp;ATENAS S.A.C. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="6969">6969&nbsp;-&nbsp;IKARO AGENCIA DE ADUANA SOCIEDAD ANONIMA                </option>
+					     						
+						     						<option value="6973">6973&nbsp;-&nbsp;LBC AGENTES DE ADUANA SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="6978">6978&nbsp;-&nbsp;PAOLILLO S.A.</option>
+					     						
+						     						<option value="6982">6982&nbsp;-&nbsp;JS PERU AGENCIA DE ADUANA S.A.C.                        </option>
+					     						
+						     						<option value="6991">6991&nbsp;-&nbsp;AZSANET S.A.                                            </option>
+					     						
+						     						<option value="6996">6996&nbsp;-&nbsp;RANSA PISCO S.A.</option>
+					     						
+						     						<option value="7003">7003&nbsp;-&nbsp;DESPACHADORA PISCO S A</option>
+					     						
+						     						<option value="7008">7008&nbsp;-&nbsp;ARES AGENTES AFIANZADOS DE ADUANA S.A.C.                </option>
+					     						
+						     						<option value="7012">7012&nbsp;-&nbsp;NICANOR ARTEAGA S.A.</option>
+					     						
+						     						<option value="7017">7017&nbsp;-&nbsp;LP ADUANAS S.A.C.                                       </option>
+					     						
+						     						<option value="7021">7021&nbsp;-&nbsp;DESPACHOS Y SERVICIOS EL SOL S.A. AGTES AFIANZ.DE ADUANA</option>
+					     						
+						     						<option value="7026">7026&nbsp;-&nbsp;PAZLEY ADUANA SOCIEDAD ANONIMA CERRADA - PAZLEY ADUANA S</option>
+					     						
+						     						<option value="7030">7030&nbsp;-&nbsp;STAR 10 SOCIEDAD ANONIMA - STAR 10 S.A                  </option>
+					     						
+						     						<option value="7035">7035&nbsp;-&nbsp;FH OPERADOR LOGISTICO S.A.C.</option>
+					     						
+						     						<option value="7044">7044&nbsp;-&nbsp;RENSEMAR ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7049">7049&nbsp;-&nbsp;NAVIADUANAS SOCIEDAD ANONIMA                            </option>
+					     						
+						     						<option value="7053">7053&nbsp;-&nbsp;SCHARFF LOGISTICA INTEGRADA S.A.                        </option>
+					     						
+						     						<option value="7058">7058&nbsp;-&nbsp;NEXXUS S.A. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="7062">7062&nbsp;-&nbsp;TRANSGROUP ADUANERO S.A.C.</option>
+					     						
+						     						<option value="7067">7067&nbsp;-&nbsp;ORBIS AGENTES DE ADUANA S.A.C.                          </option>
+					     						
+						     						<option value="7071">7071&nbsp;-&nbsp;A & V AGENTES DE ADUANA S.A.C.                          </option>
+					     						
+						     						<option value="7080">7080&nbsp;-&nbsp;JIREH ADUANAS S.A.C. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="7085">7085&nbsp;-&nbsp;ENLHASSA S.A.                                           </option>
+					     						
+						     						<option value="7094">7094&nbsp;-&nbsp;CUSTOMS A. S.A.C  AGENCIA DE ADUANA                     </option>
+					     						
+						     						<option value="7099">7099&nbsp;-&nbsp;ASESORIA Y GESTION EN ADUANAS SOCIEDAD ANONIMA</option>
+					     						
+						     						<option value="7102">7102&nbsp;-&nbsp;GONZALO LLERENA ORTIZ DE ZEVALLOS</option>
+					     						
+						     						<option value="7107">7107&nbsp;-&nbsp;ORBE CARGO PERU S.A.C.</option>
+					     						
+						     						<option value="7111">7111&nbsp;-&nbsp;SERV.DE DESADUANAJE S.A.</option>
+					     						
+						     						<option value="7116">7116&nbsp;-&nbsp;M & D SOLUCIONES LOGISTICAS S.A.C. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="7120">7120&nbsp;-&nbsp;SOTO ZEGARRA MARCOS MIGUEL</option>
+					     						
+						     						<option value="7125">7125&nbsp;-&nbsp;ADUANERA UCEDA S.A.C.</option>
+					     						
+						     						<option value="7134">7134&nbsp;-&nbsp;MARADUANAS S.A.C.</option>
+					     						
+						     						<option value="7139">7139&nbsp;-&nbsp;PASTOR ACOSTA TENORIO S.R.LTDA.                         </option>
+					     						
+						     						<option value="7143">7143&nbsp;-&nbsp;MG AGENTE DE ADUANA OPERADOR LOGISTICO S.A.C.</option>
+					     						
+						     						<option value="7148">7148&nbsp;-&nbsp;LLOYDS`S CUSTOMS CUZCO S.A.</option>
+					     						
+						     						<option value="7152">7152&nbsp;-&nbsp;IPH AGENCIA DE ADUANA E.I.R.L.                          </option>
+					     						
+						     						<option value="7157">7157&nbsp;-&nbsp;MURREYSOL S.A. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="7161">7161&nbsp;-&nbsp;V.I.I.  S.A.C.  AGENCIA  DE  ADUANA                     </option>
+					     						
+						     						<option value="7166">7166&nbsp;-&nbsp;AGENCIA DE ADUANA CUSCO S.A.</option>
+					     						
+						     						<option value="7170">7170&nbsp;-&nbsp;MODEAR AGENCIA DE ADUANA OPERADOR LOGISTICO S.A.C.      </option>
+					     						
+						     						<option value="7175">7175&nbsp;-&nbsp;AGENCIA DE ADUANA ROYAL S.A.</option>
+					     						
+						     						<option value="7189">7189&nbsp;-&nbsp;SOLUCIONES LOGISTICAS HART S.A.C.</option>
+					     						
+						     						<option value="7193">7193&nbsp;-&nbsp;CASANOVA ZUZUNAGA CARLOS A</option>
+					     						
+						     						<option value="7198">7198&nbsp;-&nbsp;ALISPED ADUANAS S.A.C. OPERADOR LOGISTICO</option>
+					     						
+						     						<option value="7201">7201&nbsp;-&nbsp;ROBERTS Y CIA. S.C.R.LTDA.</option>
+					     						
+						     						<option value="7206">7206&nbsp;-&nbsp;CORPORACION LOGISTICA GLOBAL S.A.C.</option>
+					     						
+						     						<option value="7210">7210&nbsp;-&nbsp;OPERACIONES ADUANERAS S.A.</option>
+					     						
+						     						<option value="7215">7215&nbsp;-&nbsp;MOCAYAS LOGISTICA ADUANERA S.A.C.                       </option>
+					     						
+						     						<option value="7224">7224&nbsp;-&nbsp;UPS ADUANAS PERU S.A.C.</option>
+					     						
+						     						<option value="7229">7229&nbsp;-&nbsp;ENRIQUE AMPUERO SA AGENTES AFIAN DE ADUN</option>
+					     						
+						     						<option value="7233">7233&nbsp;-&nbsp;CORPORACION LOGISTICA ADUANERA S.A.C.</option>
+					     						
+						     						<option value="7238">7238&nbsp;-&nbsp;AMPUERO ALVAREZ ENRIQUE</option>
+					     						
+						     						<option value="7242">7242&nbsp;-&nbsp;SLOGISTIC S.A.</option>
+					     						
+						     						<option value="7251">7251&nbsp;-&nbsp;GLOBAL GROUP S.A.C. AGENCIA DE ADUANA                   </option>
+					     						
+						     						<option value="7256">7256&nbsp;-&nbsp;A.P.G. AGENCIA DE ADUANA S.A.</option>
+					     						
+						     						<option value="7260">7260&nbsp;-&nbsp;AAVIA S.A.C. AGENTE DE ADUANAS</option>
+					     						
+						     						<option value="7265">7265&nbsp;-&nbsp;CALVIMONTES Y CIA. S.A.</option>
+					     						
+						     						<option value="7274">7274&nbsp;-&nbsp;SALAZAR LINARES JAVIER H. S.C.R.L.                      </option>
+					     						
+						     						<option value="7279">7279&nbsp;-&nbsp;LA ESMERALDA AGENCIA DE ADUANA S.R.L.</option>
+					     						
+						     						<option value="7283">7283&nbsp;-&nbsp;SOTO ZEGARRA AURELIO LUIS                               </option>
+					     						
+						     						<option value="7292">7292&nbsp;-&nbsp;MADALENGOITIA MORENO M.</option>
+					     						
+						     						<option value="7297">7297&nbsp;-&nbsp;NEXUS ADUANAS PERU S.A.C.                               </option>
+					     						
+						     						<option value="7300">7300&nbsp;-&nbsp;ALEJANDRO ZAVALA SOCIEDAD ANONIMA AGTES.DE AD.(A.Z.S.A) </option>
+					     						
+						     						<option value="7305">7305&nbsp;-&nbsp;GLOBAL LOGISTICS FORWARDING ADUANAS S.A.C. - GLF ADUANAS</option>
+					     						
+						     						<option value="7314">7314&nbsp;-&nbsp;ECOADUANAS LOGISTICS S.A.C.</option>
+					     						
+						     						<option value="7319">7319&nbsp;-&nbsp;VELASQUEZ EDUARDO S.C.R.LTDA.                           </option>
+					     						
+						     						<option value="7323">7323&nbsp;-&nbsp;COMERCIO INTEGRAL S.A.C. AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="7328">7328&nbsp;-&nbsp;MAXIMO E. VELASQUEZ S.A.</option>
+					     						
+						     						<option value="7332">7332&nbsp;-&nbsp;RH ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7337">7337&nbsp;-&nbsp;AGENTES DESPACHADORES DE ADUANA MATARANI S.A.           </option>
+					     						
+						     						<option value="7341">7341&nbsp;-&nbsp;EXPEDITORS ADUANAS PERU S.A.C.</option>
+					     						
+						     						<option value="7346">7346&nbsp;-&nbsp;MIDOLO AUGUSTO Y CIA. S.C.R.LTDA.</option>
+					     						
+						     						<option value="7350">7350&nbsp;-&nbsp;CORPORACION ADUANERA KALLPA S.A.</option>
+					     						
+						     						<option value="7355">7355&nbsp;-&nbsp;SERVICIOS ADUANEROS DEL SUR S.A.                        </option>
+					     						
+						     						<option value="7364">7364&nbsp;-&nbsp;DESPACHOS AREQUIPA S.A.</option>
+					     						
+						     						<option value="7369">7369&nbsp;-&nbsp;A.R.S. ASESORES AGENTE DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="7373">7373&nbsp;-&nbsp;ADUANERA MOLLENDO S.C.R.L.                              </option>
+					     						
+						     						<option value="7378">7378&nbsp;-&nbsp;SAN MIGUEL ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7382">7382&nbsp;-&nbsp;CHUNGUNGO AGENCIA AFIANZADA DE AD</option>
+					     						
+						     						<option value="7387">7387&nbsp;-&nbsp;DAYBREAK SOLUCIONES INTEGRALES EN LOGISTICA SOCIEDAD ANO</option>
+					     						
+						     						<option value="7391">7391&nbsp;-&nbsp;CUSTOM S.A.</option>
+					     						
+						     						<option value="7396">7396&nbsp;-&nbsp;SC & D AGENTES DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="7404">7404&nbsp;-&nbsp;ACCIONA FORWARDING ADUANAS S.A.C.                       </option>
+					     						
+						     						<option value="7409">7409&nbsp;-&nbsp;AGENCIA DE ADUANA J.L. S.A.</option>
+					     						
+						     						<option value="7413">7413&nbsp;-&nbsp;TECNOLOGIA ADUANERA S.A.C.</option>
+					     						
+						     						<option value="7418">7418&nbsp;-&nbsp;GIBSON Y DIAZ S.A.                                      </option>
+					     						
+						     						<option value="7422">7422&nbsp;-&nbsp;GRUPO ADUAN AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="7427">7427&nbsp;-&nbsp;DESPACHOS ILO S.A.                                      </option>
+					     						
+						     						<option value="7431">7431&nbsp;-&nbsp;WORLD INTERNATIONAL ADUANAS S.A.C. - WI ADUANAS S.A.C.  </option>
+					     						
+						     						<option value="7436">7436&nbsp;-&nbsp;ADUANERA ILO S. R. LTDA.</option>
+					     						
+						     						<option value="7440">7440&nbsp;-&nbsp;HERRAN AGENCIA DE ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7445">7445&nbsp;-&nbsp;EXPERTOS ADUANEROS S.A. "EXPASA"</option>
+					     						
+						     						<option value="7454">7454&nbsp;-&nbsp;TECNOSUR S.A.                                           </option>
+					     						
+						     						<option value="7463">7463&nbsp;-&nbsp;DESPACHADORA DEL PACIFICO SUR S.A.                      </option>
+					     						
+						     						<option value="7468">7468&nbsp;-&nbsp;NPP AGENCIA DE ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7472">7472&nbsp;-&nbsp;NICANOR ARTEAGA ILO S.A.</option>
+					     						
+						     						<option value="7477">7477&nbsp;-&nbsp;TCI AGENCIA DE ADUANA S.A.C.                            </option>
+					     						
+						     						<option value="7481">7481&nbsp;-&nbsp;MURIEL SUR S.A.</option>
+					     						
+						     						<option value="7486">7486&nbsp;-&nbsp;ADVANCED LOGISTICS GROUP SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="7490">7490&nbsp;-&nbsp;JOSE VALDIVIA S.A. AGENTES DE ADUANA                    </option>
+					     						
+						     						<option value="7495">7495&nbsp;-&nbsp;PERU ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7503">7503&nbsp;-&nbsp;LOGISTAS ADUANAS S.A.                                   </option>
+					     						
+						     						<option value="7508">7508&nbsp;-&nbsp;LUIS BAHAMONDE JUAREZ                                   </option>
+					     						
+						     						<option value="7512">7512&nbsp;-&nbsp;DPA ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7517">7517&nbsp;-&nbsp;JUAN ARTURO BACIGALUPO HURTADO</option>
+					     						
+						     						<option value="7521">7521&nbsp;-&nbsp;AGENCIA DE ADUANA DEL SUR SOCIEDAD ANONIMA CERRADA - AGE</option>
+					     						
+						     						<option value="7526">7526&nbsp;-&nbsp;AGENTES A. GOMEZ DE LA TORRE S.A.</option>
+					     						
+						     						<option value="7530">7530&nbsp;-&nbsp;SGL ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7535">7535&nbsp;-&nbsp;ADUANERA DEL SUR S.A.</option>
+					     						
+						     						<option value="7544">7544&nbsp;-&nbsp;AGENCIA DE ADUANA SOTO Y CIA S.C.R.L.</option>
+					     						
+						     						<option value="7549">7549&nbsp;-&nbsp;PASOC ADUANAS SOCIEDAD ANONIMA - PASOC ADUANAS S.A.</option>
+					     						
+						     						<option value="7558">7558&nbsp;-&nbsp;DESPACHOS ADUANEROS CHAVIMOCHIC SAC                     </option>
+					     						
+						     						<option value="7562">7562&nbsp;-&nbsp;ZEVALLOS & CIA S.A.</option>
+					     						
+						     						<option value="7567">7567&nbsp;-&nbsp;TIC LOGISTICS S.A.C.</option>
+					     						
+						     						<option value="7571">7571&nbsp;-&nbsp;FABIAN SILVESTRE ALCA FLORES</option>
+					     						
+						     						<option value="7576">7576&nbsp;-&nbsp;MALHER OPERADOR LOGISTICO S.A.C.</option>
+					     						
+						     						<option value="7580">7580&nbsp;-&nbsp;MAR Y MAR AGENTES DE ADUANA S.A.</option>
+					     						
+						     						<option value="7585">7585&nbsp;-&nbsp;CORPORACION BRAVO MORALES S.A.C.</option>
+					     						
+						     						<option value="7594">7594&nbsp;-&nbsp;IJM LOGISTIC S.A.C.</option>
+					     						
+						     						<option value="7599">7599&nbsp;-&nbsp;DESPACHOS ADUANEROS TACNA S.A.                          </option>
+					     						
+						     						<option value="7607">7607&nbsp;-&nbsp;WORLD SERVICE SOC.DE RESP. LIMITADA</option>
+					     						
+						     						<option value="7611">7611&nbsp;-&nbsp;SALCEA ADUANAS PERU S.A.C.                              </option>
+					     						
+						     						<option value="7616">7616&nbsp;-&nbsp;AGENCIA DE ADUANA TACNA E.I.R.L.</option>
+					     						
+						     						<option value="7620">7620&nbsp;-&nbsp;TRANSITARIO INTERNACIONAL MULTIMODAL SAC                </option>
+					     						
+						     						<option value="7625">7625&nbsp;-&nbsp;VICTOR SALAS BARTRA                                     </option>
+					     						
+						     						<option value="7634">7634&nbsp;-&nbsp;SERVICIOS ADUANEROS ANDINA INTERNACIONAL S.R.L.         </option>
+					     						
+						     						<option value="7639">7639&nbsp;-&nbsp;STEVEN PERU ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7643">7643&nbsp;-&nbsp;SUSANA CONSUELO ZAVALA GUTIERREZ</option>
+					     						
+						     						<option value="7648">7648&nbsp;-&nbsp;CL ADUANA S.A.C.</option>
+					     						
+						     						<option value="7652">7652&nbsp;-&nbsp;DESPACHADORA PTO.MALDONADO S.A.</option>
+					     						
+						     						<option value="7657">7657&nbsp;-&nbsp;MELKARTH AGENTES ADUANEROS S.A.C.</option>
+					     						
+						     						<option value="7661">7661&nbsp;-&nbsp;BUENA VISTA SOCIEDAD ANONIMA CERRADA AGENCIA DE ADUANA</option>
+					     						
+						     						<option value="7666">7666&nbsp;-&nbsp;SAN MIGUEL SERVICIOS LOGISTICOS  SOCIEDAD  COMERCIAL  DE</option>
+					     						
+						     						<option value="7670">7670&nbsp;-&nbsp;MARCO ANTONIO CASTRO AREVALO                            </option>
+					     						
+						     						<option value="7675">7675&nbsp;-&nbsp;AGENCIA DE ADUANA AMT S.A.C.</option>
+					     						
+						     						<option value="7684">7684&nbsp;-&nbsp;ADL SERVICIOS LOGISTICOS S.A.C.                         </option>
+					     						
+						     						<option value="7689">7689&nbsp;-&nbsp;DESPACHOS ADUANEROS ARUNTA S A</option>
+					     						
+						     						<option value="7693">7693&nbsp;-&nbsp;OLZAA AGENCIA DE ADUANA S.A.</option>
+					     						
+						     						<option value="7698">7698&nbsp;-&nbsp;PUCALLPA S.A.</option>
+					     						
+						     						<option value="7701">7701&nbsp;-&nbsp;PACIFICO DESPACHOS SOCIEDAD ANONIMA CERRADA - PACIFICO D</option>
+					     						
+						     						<option value="7706">7706&nbsp;-&nbsp;LICENCIAS ADUANERAS S.A. AGENTE DE ADUANA</option>
+					     						
+						     						<option value="7710">7710&nbsp;-&nbsp;AGENCIA DE ADUANA MONTERO S.A.C.</option>
+					     						
+						     						<option value="7715">7715&nbsp;-&nbsp;DESPACHADORA UCAYALI AGENTES DE ADUANA S.A.C.           </option>
+					     						
+						     						<option value="7724">7724&nbsp;-&nbsp;DAVILA GARCIA S.C.R.LTDA.                               </option>
+					     						
+						     						<option value="7729">7729&nbsp;-&nbsp;MUNDI AGENTE DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="7733">7733&nbsp;-&nbsp;BRICENO CABRERA REMIGIO</option>
+					     						
+						     						<option value="7738">7738&nbsp;-&nbsp;GRUPO ASL AGENTES DE ADUANA S.A.C</option>
+					     						
+						     						<option value="7747">7747&nbsp;-&nbsp;B & B AGENTES DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="7751">7751&nbsp;-&nbsp;EXIMP S.C.R.LTDA.</option>
+					     						
+						     						<option value="7756">7756&nbsp;-&nbsp;SPEED OCEAN ADUANAS S.A.C. AGENTES AFIANZADOS DE ADUANAS</option>
+					     						
+						     						<option value="7760">7760&nbsp;-&nbsp;AGENTES ADUANEROS TACNA SOCIEDAD ANONIMA - ATASA        </option>
+					     						
+						     						<option value="7774">7774&nbsp;-&nbsp;ATCA OPERADORES ADUANEROS S.A.C.                        </option>
+					     						
+						     						<option value="7779">7779&nbsp;-&nbsp;GESTIONES ADUANERAS TACNA SAC.</option>
+					     						
+						     						<option value="7783">7783&nbsp;-&nbsp;PLUS ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7788">7788&nbsp;-&nbsp;DISCOVERY S.A. AGENTES DE ADUANA                        </option>
+					     						
+						     						<option value="7792">7792&nbsp;-&nbsp;E.F.V. AGENTES DE ADUANAS SOCIEDAD ANONIMA CERRADA - E.F</option>
+					     						
+						     						<option value="7797">7797&nbsp;-&nbsp;SERVICIOS LOGISTICOS ADUANALES S.A                      </option>
+					     						
+						     						<option value="7800">7800&nbsp;-&nbsp;MACROMAR ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7805">7805&nbsp;-&nbsp;MIGUEL VASQUEZ RUIZ S.A.C-AGE. DE ADUANA                </option>
+					     						
+						     						<option value="7814">7814&nbsp;-&nbsp;CESAR A. PEREZ BARTRA S.A.</option>
+					     						
+						     						<option value="7819">7819&nbsp;-&nbsp;LOGISTICA KARAL S.A.C.</option>
+					     						
+						     						<option value="7823">7823&nbsp;-&nbsp;AGENCIA VENEGAS S.A.                                    </option>
+					     						
+						     						<option value="7828">7828&nbsp;-&nbsp;ICA GROUP ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7841">7841&nbsp;-&nbsp;CORPORACION DE OPERACIONES ADUANERAS LOG</option>
+					     						
+						     						<option value="7846">7846&nbsp;-&nbsp;FRONTIER DIRECT LOGISTICS S.A.C.</option>
+					     						
+						     						<option value="7850">7850&nbsp;-&nbsp;IGLESIAS NINO MARIO S.C.R.LTDA.</option>
+					     						
+						     						<option value="7855">7855&nbsp;-&nbsp;SOCIEDAD ADUANERA DEL PERU S.A.C</option>
+					     						
+						     						<option value="7864">7864&nbsp;-&nbsp;SERVICIOS ADUANEROS ASOCIADOS S.A.C.</option>
+					     						
+						     						<option value="7869">7869&nbsp;-&nbsp;D Y O S.A. AGENCIA AFIANZADA DE ADUANA                  </option>
+					     						
+						     						<option value="7873">7873&nbsp;-&nbsp;BROKMAR LOGISTICS SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="7878">7878&nbsp;-&nbsp;GARCIA SANCHEZ JULIO D. S.C.R.LTDA.</option>
+					     						
+						     						<option value="7882">7882&nbsp;-&nbsp;CLU ADUANAS S.A.C.</option>
+					     						
+						     						<option value="7887">7887&nbsp;-&nbsp;OPERACIONES ADUANERAS LORETO S.A                        </option>
+					     						
+						     						<option value="7896">7896&nbsp;-&nbsp;GARCIA SILVA RAFAEL EDUARDO</option>
+					     						
+						     						<option value="7904">7904&nbsp;-&nbsp;DEL CASTILLO SANDOVAL RAUL ENRIQUE</option>
+					     						
+						     						<option value="7913">7913&nbsp;-&nbsp;DESPACHOS ADUANEROS AMAZONICOS S.A.</option>
+					     						
+						     						<option value="7922">7922&nbsp;-&nbsp;JORGE DEL CASTILLO LOZANO S.R.LTDA.</option>
+					     						
+						     						<option value="7931">7931&nbsp;-&nbsp;CARLOS MANUEL RODRIGUEZ PAREDES</option>
+					     						
+						     						<option value="7940">7940&nbsp;-&nbsp;AGENCIA NANAY SOCIEDAD ANONIMA</option>
+					     						
+						     						<option value="7959">7959&nbsp;-&nbsp;JULIO CESAR TORRES S.A. AG. DE AD.</option>
+					     						
+						     						<option value="7968">7968&nbsp;-&nbsp;GLOBALMAX AGENCIA DE ADUANAS SOCIEDAD ANONIMA CERRADA   </option>
+					     						
+						     						<option value="7977">7977&nbsp;-&nbsp;E. PEREYRA Y CIA S.A.</option>
+					     						
+						     						<option value="7986">7986&nbsp;-&nbsp;AGENCIA DE ADUANA RIO MAYO S.A.</option>
+					     						
+						     						<option value="7995">7995&nbsp;-&nbsp;DESPACHOS Y SERVICIOS DEL ORIENTE S.A. "DESSO S.A"      </option>
+					     						
+						     						<option value="8011">8011&nbsp;-&nbsp;CESAR A. PEREZ FOINQUINOS                               </option>
+					     						
+						     						<option value="8138">8138&nbsp;-&nbsp;DATA ADUANERA S.A.                                      </option>
+					     						
+						     						<option value="8147">8147&nbsp;-&nbsp;ARANIBAR ADUANAS SOCIEDAD ANONIMA CERRADA - ARANIBAR ADU</option>
+					     						
+						     						<option value="8200">8200&nbsp;-&nbsp;AGENCIA DE ADUANA OCEANO ANTARTICO SA</option>
+					     						
+						     						<option value="8237">8237&nbsp;-&nbsp;PIRAMIDE AGENCIA DE ADUANAS S.A.</option>
+					     						
+						     						<option value="8246">8246&nbsp;-&nbsp;AGENCIA DE ADUANA SAN BORJA S.A.</option>
+					     						
+						     						<option value="8255">8255&nbsp;-&nbsp;KINTETSU ADUANAS S.A.C. (KWE)                           </option>
+					     						
+						     						<option value="8291">8291&nbsp;-&nbsp;CYOADUANAS S.A.                                         </option>
+					     						
+						     						<option value="8327">8327&nbsp;-&nbsp;TELEDESPACHOS ADUANEROS S.A.                            </option>
+					     						
+						     						<option value="8331">8331&nbsp;-&nbsp;R Y R AGENCIA DE ADUANAS S.A.C.</option>
+					     						
+						     						<option value="8340">8340&nbsp;-&nbsp;3G ADUANAS S.A.C.</option>
+					     						
+						     						<option value="8359">8359&nbsp;-&nbsp;L & R SOLUCIONES ADUANERAS S.A.C.</option>
+					     						
+						     						<option value="8368">8368&nbsp;-&nbsp;ISA PERU ADUANAS SOCIEDAD ANONIMA CERRADA - ISA PERU ADU</option>
+					     						
+						     						<option value="8377">8377&nbsp;-&nbsp;ORBIS LOGISTIC SOCIEDAD ANONIMA CERRADA</option>
+					     						
+						     						<option value="8386">8386&nbsp;-&nbsp;VISAFAST CORPORACION LOGISTICA S.A.C.</option>
+					     						
+						     						<option value="8403">8403&nbsp;-&nbsp;SURAMERICA ADUANAS S.A.C.</option>
+					     						
+						     						<option value="8412">8412&nbsp;-&nbsp;VEGA AGENTES AFIANZADOS DE ADUANAS S.A.C.</option>
+					     						
+						     						<option value="8417">8417&nbsp;-&nbsp;TAURO AGENTES DE ADUANA S.A.                            </option>
+					     						
+						     						<option value="8421">8421&nbsp;-&nbsp;ADUANDES SERVICIOS LOGISTICOS INTEGRADOS S.A.C.</option>
+					     						
+						     						<option value="8430">8430&nbsp;-&nbsp;SCHENKER PERU S.R.L.</option>
+					     						
+						     						<option value="8444">8444&nbsp;-&nbsp;AGENCIA DE ADUANA LAMA S.A.</option>
+					     						
+						     						<option value="8449">8449&nbsp;-&nbsp;EGL ADUANAS S.A.C.</option>
+					     						
+						     						<option value="8458">8458&nbsp;-&nbsp;MOL LOGISTIC S.A.C.</option>
+					     						
+						     						<option value="8467">8467&nbsp;-&nbsp;ADUAMAR AGENTES DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="8476">8476&nbsp;-&nbsp;ACAMAR ADUANAS S.A.                                     </option>
+					     						
+						     						<option value="8485">8485&nbsp;-&nbsp;GMC LOGISTICS PERU SOCIEDAD ANONIMA CERRADA-GMC S.A.C.</option>
+					     						
+						     						<option value="8494">8494&nbsp;-&nbsp;JOTA ADUANAS S.A.C.</option>
+					     						
+						     						<option value="8511">8511&nbsp;-&nbsp;OCB AGENCIA DE ADUANAS SOCIEDAD ANONIMA CERRADA - OCB AD</option>
+					     						
+						     						<option value="8520">8520&nbsp;-&nbsp;CONEXION ADUANAS S.A.C.</option>
+					     						
+						     						<option value="8539">8539&nbsp;-&nbsp;C ZAVALA ADUANERA SOCIEDAD ANONIMA CERRADA - C ZAVALA AD</option>
+					     						
+						     						<option value="8548">8548&nbsp;-&nbsp;CONCRETEC LOGISTIC S.A.C.</option>
+					     						
+						     						<option value="8557">8557&nbsp;-&nbsp;SYBERCRIS PERUVIAN CUSTOMS S.A.C.  - SYBERCRIS S.A.C.</option>
+					     						
+						     						<option value="8566">8566&nbsp;-&nbsp;FULL ADUANAS OPERADOR LOGISTICO S.A.C.</option>
+					     						
+						     						<option value="8575">8575&nbsp;-&nbsp;ACR ADUANAS S.A.C.</option>
+					     						
+						     						<option value="8584">8584&nbsp;-&nbsp;ENDLOSUNG AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="8593">8593&nbsp;-&nbsp;AG INTERNATIONAL FREIGHT FORWARDER SOCIEDAD ANONIMA CERR</option>
+					     						
+						     						<option value="8601">8601&nbsp;-&nbsp;JAR AGENTE DE ADUANAS S.A.C.</option>
+					     						
+						     						<option value="8610">8610&nbsp;-&nbsp;FAST ADUANAS S.A.C.</option>
+					     						
+						     						<option value="8629">8629&nbsp;-&nbsp;ANDESGATE AG S.A.C.</option>
+					     						
+						     						<option value="8647">8647&nbsp;-&nbsp;MG ADUANAS S.A.C</option>
+					     						
+						     						<option value="8656">8656&nbsp;-&nbsp;CARGO WORLD ADUANAS S.A.C.</option>
+					     						
+						     						<option value="8665">8665&nbsp;-&nbsp;V&P CUSTOMS S.A.C.</option>
+					     						
+						     						<option value="9092">9092&nbsp;-&nbsp;AGENCIA DE ADUANA PONCE SAC</option>
+					     						
+						     						<option value="9119">9119&nbsp;-&nbsp;HUGO A.CHILET MONTOYA S.R.LTDA.</option>
+					     						
+						     						<option value="9128">9128&nbsp;-&nbsp;LUIS SILVA SALINAS</option>
+					     						
+						     						<option value="9137">9137&nbsp;-&nbsp;OSCAR ARCINIEGA PASTOR</option>
+					     						
+						     						<option value="9146">9146&nbsp;-&nbsp;FRANCISCO FERNANDO DIAZ DUQUE                           </option>
+					     						
+						     						<option value="9155">9155&nbsp;-&nbsp;CARLOS COSTA VOTO-BERNALES S.A.</option>
+					     						
+						     						<option value="9164">9164&nbsp;-&nbsp;JOSE VINIZIO MOLFINO CORDERO</option>
+					     						
+						     						<option value="9182">9182&nbsp;-&nbsp;AGENCIA DE ADUANA PACIFICO PERU S.A.</option>
+					     						
+						     						<option value="9191">9191&nbsp;-&nbsp;ADUANAS Y FINANZAS S.A.</option>
+					     						
+						     						<option value="9218">9218&nbsp;-&nbsp;JUAN YURI S.A.</option>
+					     						
+						     						<option value="9227">9227&nbsp;-&nbsp;ADUANAS, SERVICIOS E INTERNAMIENTOS S.A.                </option>
+					     						
+						     						<option value="9236">9236&nbsp;-&nbsp;TRANSOCEANICA Y PORTUARIA AG.DE AD.</option>
+					     						
+						     						<option value="9245">9245&nbsp;-&nbsp;DESPACHOS ADUANEROS UNIVERSO S.A.C</option>
+					     						
+						     						<option value="9254">9254&nbsp;-&nbsp;ERNESTO MARINO SALAS ARNAO S.R.LTDA.</option>
+					     						
+						     						<option value="9263">9263&nbsp;-&nbsp;HUGO BAZALAR ARAMBULO</option>
+					     						
+						     						<option value="9272">9272&nbsp;-&nbsp;CENTRAL ADUANERA S.A.                                   </option>
+					     						
+						     						<option value="9281">9281&nbsp;-&nbsp;FULL S.A. AGENTES DE ADUANA</option>
+					     						
+						     						<option value="9290">9290&nbsp;-&nbsp;CARLOS VARGAS VINATEA S.A.</option>
+					     						
+						     						<option value="9308">9308&nbsp;-&nbsp;OPERACIONES PORTUARIAS S.A.</option>
+					     						
+						     						<option value="9317">9317&nbsp;-&nbsp;HUGO RIVERO GARCIA CALDERON</option>
+					     						
+						     						<option value="9326">9326&nbsp;-&nbsp;MANUEL J. LARRAYAGA S.A.</option>
+					     						
+						     						<option value="9335">9335&nbsp;-&nbsp;RICARDO H. FRIAS LOPEZ                                  </option>
+					     						
+						     						<option value="9344">9344&nbsp;-&nbsp;PANALPINA ADUANAS S.A.</option>
+					     						
+						     						<option value="9353">9353&nbsp;-&nbsp;NORCAM S.A.                                             </option>
+					     						
+						     						<option value="9362">9362&nbsp;-&nbsp;FREBERVA S.A.</option>
+					     						
+						     						<option value="9380">9380&nbsp;-&nbsp;ENRIQUE ADRIANO RAMIREZ JAUREGUI</option>
+					     						
+						     						<option value="9399">9399&nbsp;-&nbsp;THOMPSON S.A.</option>
+					     						
+						     						<option value="9425">9425&nbsp;-&nbsp;DESTAM S.A.</option>
+					     						
+						     						<option value="9434">9434&nbsp;-&nbsp;AEROPOSMAR S.A.</option>
+					     						
+						     						<option value="9443">9443&nbsp;-&nbsp;L.E.M. S.A. AGENTES AFIANZADOS DE ADUANA</option>
+					     						
+						     						<option value="9452">9452&nbsp;-&nbsp;ASESORES INTERNACIONALES DE ADUANA S.A.</option>
+					     						
+						     						<option value="9461">9461&nbsp;-&nbsp;PROMOTORA ADUANERA S.A.</option>
+					     						
+						     						<option value="9470">9470&nbsp;-&nbsp;ADUANERA SAN JORGE S.A.</option>
+					     						
+						     						<option value="9489">9489&nbsp;-&nbsp;SOLARIZ S.A.</option>
+					     						
+						     						<option value="9498">9498&nbsp;-&nbsp;ALBERTO ASCA S.A.</option>
+					     						
+						     						<option value="9506">9506&nbsp;-&nbsp;CESAR ALEX TERRAZAS FEBRES</option>
+					     						
+						     						<option value="9515">9515&nbsp;-&nbsp;VARIZA S.A. AG.</option>
+					     						
+						     						<option value="9524">9524&nbsp;-&nbsp;SERVICIOS ADUANEROS BELLAVISTA S.A.</option>
+					     						
+						     						<option value="9533">9533&nbsp;-&nbsp;PAZ & CIA. S.A. AG. AF. DE ADUANA                       </option>
+					     						
+						     						<option value="9542">9542&nbsp;-&nbsp;COLONIA S.A.</option>
+					     						
+						     						<option value="9551">9551&nbsp;-&nbsp;ADUACARGA S.A.</option>
+					     						
+						     						<option value="9560">9560&nbsp;-&nbsp;EXPORT. E IMPORT. PANAMERICANA S.A.</option>
+					     						
+						     						<option value="9579">9579&nbsp;-&nbsp;AFOROS INDUSTRIALES S.A.</option>
+					     						
+						     						<option value="9588">9588&nbsp;-&nbsp;CONTRERAS  BERMUDEZ AG.DE ADUANA S.A.</option>
+					     						
+						     						<option value="9605">9605&nbsp;-&nbsp;LITORAL PACIFICO S. A. AGENCIA DE ADUANA                </option>
+					     						
+						     						<option value="9614">9614&nbsp;-&nbsp;RECSA S.A.</option>
+					     						
+						     						<option value="9623">9623&nbsp;-&nbsp;GELPHO HNOS S.A.</option>
+					     						
+						     						<option value="9632">9632&nbsp;-&nbsp;TRIDESA S.A.                                            </option>
+					     						
+						     						<option value="9641">9641&nbsp;-&nbsp;GUMESEVE S.A.</option>
+					     						
+						     						<option value="9650">9650&nbsp;-&nbsp;GOBVAMAR S A AGENTES DE ADUANA</option>
+					     						
+						     						<option value="9669">9669&nbsp;-&nbsp;ZEI KAN S.A.</option>
+					     						
+						     						<option value="9678">9678&nbsp;-&nbsp;MARANGA S.A.</option>
+					     						
+						     						<option value="9687">9687&nbsp;-&nbsp;VICTOR M LOPEZ GARCIA S.A.</option>
+					     						
+						     						<option value="9696">9696&nbsp;-&nbsp;ALFA AGENCIA DE ADUANA S.A.C.</option>
+					     						
+						     						<option value="9713">9713&nbsp;-&nbsp;AGENTES INTERNACIONALES DE ADUANA S.A.                  </option>
+					     						
+						     						<option value="9722">9722&nbsp;-&nbsp;SERV. ADUANEROS INTERNACIONALES S.A.</option>
+					     						
+						     						<option value="9731">9731&nbsp;-&nbsp;CESAR M. PAREDES DEL CASTILLO</option>
+					     						
+						     						<option value="9740">9740&nbsp;-&nbsp;ESMES S.A. AGENTES AFIANZADOS DE ADUANA                 </option>
+					     						
+						     						<option value="9759">9759&nbsp;-&nbsp;DESPACHADORA IBEROAMERICANA S.A.</option>
+					     						
+						     						<option value="9768">9768&nbsp;-&nbsp;IMP.Y EXP. ADUANERAS S.A.(IMEXASA)</option>
+					     						
+						     						<option value="9777">9777&nbsp;-&nbsp;REAL S.A.</option>
+					     						
+						     						<option value="9786">9786&nbsp;-&nbsp;NEGOCIOS Y ACTIVIDADES ADUANERAS S.A.                   </option>
+					     						
+						     						<option value="9795">9795&nbsp;-&nbsp;PACIFIC`S KING S.A.</option>
+					     						
+						     						<option value="9803">9803&nbsp;-&nbsp;CASOR ADUANEROS SAC</option>
+					     						
+						     						<option value="9812">9812&nbsp;-&nbsp;POST MAR S A</option>
+					     						
+						     						<option value="9821">9821&nbsp;-&nbsp;FERNANDO SALHUANA AG.DE ADUANAS S.A.</option>
+					     						
+						     						<option value="9830">9830&nbsp;-&nbsp;CONTACTO ADUANERO S.A.C. AGENCIA DE ADUANA              </option>
+					     						
+						     						<option value="9849">9849&nbsp;-&nbsp;NEGOCIOS REUNIDOS S.A.</option>
+					     						
+						     						<option value="9858">9858&nbsp;-&nbsp;CESAR RODRIGUEZ RUBATTO</option>
+					     						
+						     						<option value="9867">9867&nbsp;-&nbsp;JOSE VICENTE SILVA VIDAURRE</option>
+					     						
+						     						<option value="9876">9876&nbsp;-&nbsp;SERVICIOS NEPTUNIA S.A.</option>
+					     						
+						     						<option value="9885">9885&nbsp;-&nbsp;JOSE HUMBERTO MEDINA NUNEZ</option>
+					     						
+						     						<option value="9894">9894&nbsp;-&nbsp;IMEXA S.A.</option>
+					     						
+						     						<option value="9902">9902&nbsp;-&nbsp;J. MARQUEZ S.A.</option>
+					     						
+						     						<option value="9911">9911&nbsp;-&nbsp;FRANCISCO PICCO VIEIRA SA AG DE ADUANA                  </option>
+					     						
+						     						<option value="9920">9920&nbsp;-&nbsp;AGENCIA DE ADUANA PERUANA S.A.                          </option>
+					     						
+						     						<option value="9939">9939&nbsp;-&nbsp;JOFERJU S.A.</option>
+					     						
+						     						<option value="9948">9948&nbsp;-&nbsp;SERVICIOS INTERNACIONALES ZETA S.A.</option>
+					     						
+					     					
+							     		</select>
+						     		
+						     	</td>
+		   					</tr>
+		    				<tr>
+		     					<td>
+		     						<b>Clasificado:</b>
+		     					</td>
+		     					<td>
+		     						<select name="grupo" size="1" class="bg">
+			     						<option value="">-- Seleccionar --</option>
+		     							
+				     						
+					     						<option value="1">IMPORTADOR</option>	
+				     						
+					     						<option value="3">TERMINAL ALMACENAMIENTO</option>	
+				     						
+					     						<option value="4">ADUANA</option>	
+				     						
+					     						<option value="5">PARTIDA ARANCELARIA</option>	
+				     						
+					     						<option value="6">PAIS DE ADQUISICION</option>	
+				     						
+					     						<option value="7">PAIS DE ORIGEN</option>	
+				     						
+					     						<option value="8">TRATO PREFERENCIAL</option>	
+				     						
+					     						<option value="9">CODIGO LIBERATORIO</option>	
+				     						
+					     						<option value="10">CONVENIO INTERNACIONAL</option>	
+				     						
+				     					
+						     		</select>
+						     	</td>
+						     	<td colspan="2">
+						     		<input type="text" name="codgrupo" class="form-text" value="118" size="12" maxlength="11"  onkeypress="return esTeclaNumero();"/>
+						     	</td>
+		    				</tr>
+		    				<tr>
+		     					<td>
+		     						<b>Ordenado por:</b>
+		     					</td>
+		     					<td>
+									<select name="orden" size="1" class="bg" >
+										<option value="fob">FOB</option>
+					                    <option value="cif">CIF</option>
+					                    <option value="acotac">ACOTACION</option>
+					                    <option value="nrodecl">NRO. DECL.</option>
+			                        </select>						     		
+						     	</td>
+						     	<td colspan="2">
+									<input type="radio" name="donacion" value="1" checked />Con donaci&oacute;n&nbsp;
+									<input type="radio" name="donacion" value="2"  />Sin donaci&oacute;n&nbsp;
+						     	</td>
+		    				</tr>
+		    				<tr>
+							    <td colspan="4">
+							    	<div class="buttonbar">
+							     		<input type="button" name="btnRetornar" value="Consultar" class="form-button" onclick="JavaScript:jsBuscar();" >
+							     	</div>
+								</td>
+							</tr>
+						</table>				
+				</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+</form>
+<br/>
+ 
+<table cellpadding="3" cellspacing="2" width="100%" class="form-table">
+ <tr> 
+ <td class="beta"> <center><b>Resultados de Consulta</b></center></td>
+  </tr>
+</table>
+
+			
+
+
+
+
+
+
+
+<table border="0" cellspacing="0" width="100%">
+	<tr><td class="lnk7" align="right"  width="50%">1 a 1 de 1</td></tr>
+</table>
+<table width="100%" cellspacing="0">
+<tr>
+	<td align="left" width="10%" class="lnk7">
+		
+	</td>
+	<td align="center" class="lnk7">
+		
+	</td>
+	<td align="right" width="10%" class="lnk7">
+		
+	</td>
+</tr>
+</table> 
+<table cellpadding="3" cellspacing="3" width="100%" class="form-table">
+	<tr>
+		 <td class="beta">
+		 	<table cellpadding="1" cellspacing="1" width="100%">
+		   		<tr>
+		   			<th class="beta" width="35%" colspan="2">Aduana</th>
+		   	 		<th class="beta" width="12%">FOB US$</th>
+		   	 		<th class="beta" width="12%">CIF US$</th>
+		   	 		<th class="beta" width="12%">Acotaci&oacute;n US$</th>
+		   	 		<th class="beta" width="5%">DUA's</th>
+		   	 		<th class="beta" width="12%">Peso Neto</th>
+		   	 		<th class="beta" width="12%">Peso Bruto</th>
+		   		</tr>
+						   		
+				<tr align="left" class="bg">
+					<td>
+						<!-- HAcostaR Inicio - M_SNADE193-2 LEY DE PROTECCION DE DATOS PERSONALES -->
+						<!-- a href="javascript:jsDetalle('118','MARITIMA DEL CALLAO');">118</a-->
+						<a href="javascript:jsDetalle('118','MARITIMA DEL CALLAO','');">
+							118
+						</a>
+						<!-- HAcostaR Fin - M_SNADE193-2 LEY DE PROTECCION DE DATOS PERSONALES -->
+					</td>
+					<td>
+						<!-- HAcostaR Inicio - M_SNADE193-2 LEY DE PROTECCION DE DATOS PERSONALES -->
+						<!-- logic:beanWrite name="mapaId" property="descri"/> -->
+						MARITIMA DEL CALLAO
+						<!-- HAcostaR Fin - M_SNADE193-2 LEY DE PROTECCION DE DATOS PERSONALES -->
+					</td>
+					<td align="right">
+						35,252,960.51
+					</td>
+					<td align="right">
+						38,387,793.29
+					</td>
+					<td align="right">
+						6,985,486.00
+					</td>
+					<td align="center">
+						201
+					</td>
+					<td align="right">
+						48,977,361.10
+					</td>
+					<td align="right">
+						50,286,853.02
+					</td>
+			  	</tr>
+			  	
+				
+			</table>
+		</td>
+	</tr>
+	<tr>
+	<td>
+	
+  	&nbsp;&nbsp;Exportar a : <a href="JavaScript:jsExport();"> Excel </a>
+    
+    </td>
+	</tr>
+</table>
+
+<FORM method="POST" name="formPaginacion" action="/cl-ad-consdepa/FrmConstImportDef.jsp">
+	<INPUT type="hidden" name="tamanioPagina"><INPUT type="hidden" name="pagina">
+</FORM>
+<FORM action="/cl-ad-consdepa/FrmConstImportDef.jsp" method="POST" id="NavigFormNext" name="NavigFormNext">
+	<INPUT type="hidden" name="currPage" Value = "1"><INPUT type="hidden" name="Action" Value = "next">
+</FORM>
+<FORM action="/cl-ad-consdepa/FrmConstImportDef.jsp" method="POST" id="NavigFormBack" name="NavigFormBack">
+<INPUT type="hidden" name="currPage" Value = "0"><INPUT type="hidden" name="Action" Value = "back" >
+</FORM>
+
+<hr style="color:black;" noshade="noshade" size="1">
+<br>
+<table width="100%" cellspacing="0" cellpadding="0">				
+	<tr>
+		<td class="bgn" align="center"></td>
+	</tr>
+	<tr>
+		<td align="right">
+			<img alt="Inicio" src="/a/imagenes/sunatpc.jpg" align="bottom" border="0">
+		</td>
+	</tr>	
+</table>
+</body>
+</html>
